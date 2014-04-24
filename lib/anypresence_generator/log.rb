@@ -1,20 +1,23 @@
 module AnypresenceGenerator
   module Log
-    def log(message, options={})
-      puts(message) if @options[:stdout]
-      @log ||= ""
-      @log << Time.now.to_s << ": " unless options[:timestamp] == false
-      @log << message.to_s << "\n"
-      @log << "\n" if options[:extra_line]
+    attr_accessor :log_file
+
+    def log(message, stdout: false, timestamp: false, extra_line: false)
+      puts(message) if stdout
+      log ||= ""
+      log << Time.now.to_s << ": " if timestamp
+      log << message.to_s << "\n"
+      log << "\n" if extra_line
+      File.open(log_file.path, 'a'.freeze) do |file|
+        file.puts(log)
+        file.close
+      end
+      log
     end
 
-    def log_output(output)
-      output = "[no output]" if output.blank?
-      log output, :timestamp => false, :extra_line => true
+    def log_content
+      "\n" + File.read(log_file.path)
     end
 
-    def debug(message)
-      puts message
-    end
   end
 end
