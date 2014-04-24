@@ -1,13 +1,19 @@
-require 'json'
-require 'recursive-open-struct'
+require 'tempfile'
+require 'rest-client'
+require 'anypresence_generator/command'
+require 'anypresence_generator/log'
+require 'anypresence_generator/repository'
+require 'anypresence_generator/payload'
 
 module AnypresenceGenerator
   class Workhorse
+    include AnypresenceGenerator::Command
+    include AnypresenceGenerator::Log
+    include AnypresenceGenerator::Repository
+    include AnypresenceGenerator::Payload
     class WorkableError < StandardError; end
-    include ::AnypresenceGenerator::Log
-    include ::AnypresenceGenerator::Command
 
-    attr_accessor :mock, :payload, :type, :environment, :build, :repository, :api_version, :application_definition
+    attr_accessor :mock, :auth_token, :project_directory
 
     class << self
       attr_accessor :_steps
@@ -21,20 +27,13 @@ module AnypresenceGenerator
       end
     end
 
-    def initialize(json_payload: nil, mock: false)
-      steps.each { |step| raise ::AnypresenceGenerator::Workhorse::WorkableError.new("No method named '#{step.to_s}' in this class.") unless respond_to?(step) }
-      raise ::AnypresenceGenerator::Workhorse::WorkableError.new('No JSON payload provided.') unless json_payload
+    def initialize(json_payload: nil, auth_token: ( raise WorkableError.new('No Auth token provided.'.freeze) ), sensitive_values: {}, mock: false)
+      steps.each { |step| raise WorkableError.new("No method named '#{step.to_s}' in this class.") unless respond_to?(step) }
+      self.digest(json_payload: json_payload)
       self.mock = mock
-      parsed_payload = RecursiveOpenStruct.new(JSON.parse(json_payload), recurse_over_arrays: true)
-      [:api, :sdk, :app].each do |type|
-        if parsed_payload.send(type)
-          self.payload = parsed_payload.send(type)
-          self.type = type
-        end
-      end
-      [:environment, :build, :repository, :api_version, :application_definition].each do |attribute|
-        self.send( "#{attribute}=", payload.send(attribute) )
-      end
+      self.auth_token = auth_token
+      self.sensitive_values = sensitive_values
+      self.log_file = Tempfile.new(['logfile'.freeze,'txt'.freeze])
     end
 
     def work
@@ -44,39 +43,49 @@ module AnypresenceGenerator
       end
     end
 
-    def execute
+    def start!
       Dir.mktmpdir do |dir|
         begin
-          @dir = dir
-          @project_dir = File.join(@dir, @workable.id.to_s)
-          FileUtils.mkdir_p(@project_dir)
+          self.project_directory = File.join(dir, build.id.to_s)
+          FileUtils.mkdir_p(project_directory)
+          setup_repository
           work
-          log "Completed work!".freeze
-          success!
-        rescue ::AnypresenceGenerator::Workhorse::WorkableError
-          log "Process has failed with the following error: #{$!.message}"
-          error!
+          success! "Completed work!".freeze
+          return true
+        rescue
+          error! "Process has failed with the following error: #{$!.message}"
+          return false
         ensure
           log "Deleting temporary files".freeze
           begin
-            FileUtils.remove_entry @dir
+            FileUtils.remove_entry project_directory
           rescue
-            log "Exception deleting file '#{@dir.path}': #{$!.message}"
+            log "Exception deleting file '#{dir.path}': #{$!.message}"
           end
         end
       end
     end
 
-    def error!
-      
+    def run_generators(*generators)
+      generators.each do |generator|
+        generator.write!(project_dir)
+        yield "#{project_dir}/#{generator.filename}" if block_given?
+      end
     end
 
-    def success!
-      
+    def error!(message)
+      log "Error: #{message}"
+      RestClient.put( build.error_url, nil, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock
+    end
+
+    def success!(message)
+      log "Success: #{message}"
+      RestClient.put( build.success_url, nil, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock
     end
 
     def increment_step!(step)
-      
+      log "Incrementing step to #{step}..."
+      RestClient.put( build.increment_step_url, { step: step }.to_json, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock
     end
 
     private
