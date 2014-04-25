@@ -1,16 +1,16 @@
 require 'test/unit'
-require 'anypresence_generator'
+require 'support/magical_generator'
 
 class AnypresenceGeneratorTest < Test::Unit::TestCase
   def test_anypresence_generator_workhorse_subclasses
-    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "api.txt"))
+    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "support/api.txt"))
     assert_nothing_raised do
       MagicalGenerator.new(json_payload: json, auth_token: 'test', mock: true)
     end
   end
 
   def test_anypresence_generator_workhorse_parses_api_payload
-    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "api.txt"))
+    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "support/api.txt"))
     generator = MagicalGenerator.new(json_payload: json, auth_token: 'test', mock: true)
     assert_not_nil generator.environment
     assert_not_nil generator.build
@@ -19,7 +19,7 @@ class AnypresenceGeneratorTest < Test::Unit::TestCase
   end
 
   def test_anypresence_generator_workhorse_parses_sdk_payload
-    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "sdk.txt"))
+    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "support/sdk.txt"))
     generator = MagicalGenerator.new(json_payload: json, auth_token: 'test', mock: true)
     assert_not_nil generator.environment
     assert_not_nil generator.build
@@ -28,7 +28,7 @@ class AnypresenceGeneratorTest < Test::Unit::TestCase
   end
 
   def test_anypresence_generator_workhorse_parses_app_payload
-    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "api.txt"))
+    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "support/api.txt"))
     generator = MagicalGenerator.new(json_payload: json, auth_token: 'test', mock: true)
     assert_not_nil generator.environment
     assert_not_nil generator.build
@@ -37,7 +37,7 @@ class AnypresenceGeneratorTest < Test::Unit::TestCase
   end
 
   def test_anypresence_generator_workhorse_executes_steps_during_processing
-    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "api.txt"))
+    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "support/api.txt"))
     generator = MagicalGenerator.new(json_payload: json, auth_token: 'test', mock: true)
     assert generator.start!
     assert generator.log_content.include?('I just did one!')
@@ -46,14 +46,14 @@ class AnypresenceGeneratorTest < Test::Unit::TestCase
   end
 
   def test_anypresence_generator_workhorse_setups_repository_during_processing
-    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "api.txt"))
+    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "support/api.txt"))
     generator = MagicalGenerator.new(json_payload: json, auth_token: 'test', mock: true)
     assert generator.start!
     assert_not_nil generator.repository
   end
 
   def test_anypresence_generator_workhorse_parses_full_depth_from_api_payload
-    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "api.txt"))
+    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "support/api.txt"))
     generator = MagicalGenerator.new(json_payload: json, auth_token: 'test', mock: true)
     assert_not_nil generator.storage_interfaces
     assert_not_nil generator.object_definitions
@@ -61,14 +61,14 @@ class AnypresenceGeneratorTest < Test::Unit::TestCase
   end
 
   def test_anypresence_generator_workhorse_parses_full_depth_from_sdk_payload
-    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "sdk.txt"))
+    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "support/sdk.txt"))
     generator = MagicalGenerator.new(json_payload: json, auth_token: 'test', mock: true)
     assert_not_nil generator.object_definitions
     assert_not_nil generator.field_definitions(object_definition: generator.object_definitions.first)
   end
 
   def test_anypresence_generator_workhorse_parses_full_depth_from_app_payload
-    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "app.txt"))
+    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "support/app.txt"))
     generator = MagicalGenerator.new(json_payload: json, auth_token: 'test', mock: true)
     assert_not_nil generator.object_definitions
     assert_not_nil generator.field_definitions(object_definition: generator.object_definitions.first)
@@ -76,7 +76,7 @@ class AnypresenceGeneratorTest < Test::Unit::TestCase
   end
 
   def test_anypresence_generator_workhorse_api_payload_handles_selectors
-    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "api.txt"))
+    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "support/api.txt"))
     generator = MagicalGenerator.new(json_payload: json, auth_token: 'test', mock: true)
     assert_not_nil generator.storage_interface_by_name('Postgres')
     assert_not_nil generator.object_definition_by_name('Dog')
@@ -89,7 +89,7 @@ class AnypresenceGeneratorTest < Test::Unit::TestCase
   end
 
   def test_anypresence_generator_workhorse_sdk_payload_handles_selectors
-    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "sdk.txt"))
+    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "support/sdk.txt"))
     generator = MagicalGenerator.new(json_payload: json, auth_token: 'test', mock: true)
     assert_not_nil generator.object_definition_by_name('Dog')
     assert_not_nil generator.field_definition_by_name('name', object_definition: generator.object_definition_by_name('Dog'))
@@ -101,7 +101,7 @@ class AnypresenceGeneratorTest < Test::Unit::TestCase
   end
 
   def test_anypresence_generator_workhorse_app_payload_handles_selectors
-    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "app.txt"))
+    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "support/app.txt"))
     generator = MagicalGenerator.new(json_payload: json, auth_token: 'test', mock: true)
     assert_not_nil generator.object_definition_by_name('Dog')
     assert_not_nil generator.field_definition_by_name('name', object_definition: generator.object_definition_by_name('Dog'))
@@ -114,7 +114,7 @@ class AnypresenceGeneratorTest < Test::Unit::TestCase
   end
 
   def test_anypresence_generator_workhorse_app_payload_handles_page_component_selectors
-    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "app.txt"))
+    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "support/app.txt"))
     generator = MagicalGenerator.new(json_payload: json, auth_token: 'test', mock: true)
     assert_not_nil generator.child_page_components(generator.root_page_component)
     assert_not_nil generator.page_component_by_name('ContactListPage')
@@ -124,22 +124,4 @@ class AnypresenceGeneratorTest < Test::Unit::TestCase
     assert_nil generator.page_component_by_name('DoesNotExist')
   end
 
-end
-
-class MagicalGenerator < AnypresenceGenerator::Workhorse
-  steps :one, :two, :three
-
-  def one
-    log 'I just did one!'
-  end
-
-  def two
-    log 'I will do two...'
-    run_command("ls")
-    log 'I just did two!'
-  end
-
-  def three
-    log 'I just did three!'
-  end
 end
