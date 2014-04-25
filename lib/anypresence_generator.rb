@@ -1,7 +1,7 @@
 require 'recursive-open-struct'
 
 require "anypresence_generator/version"
-require "anypresence_generator/templates"
+require "anypresence_generator/template"
 require "anypresence_generator/workhorse"
 require "anypresence_generator/repository"
 require "anypresence_generator/command"
