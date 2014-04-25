@@ -55,8 +55,10 @@ module AnypresenceGenerator
         git.config('user.email', user_email)
         git.remove(removed_files) unless removed_files.nil? || removed_files.empty?
         git.remove(removed_directories, recursive: true) unless removed_directories.nil? || removed_directories.empty?
-        git.add '.'
-        git.commit_all commit_message
+        if (!pushed && !%x|ls #{directory}|.empty?) || (pushed && !git.status.changed.empty?)
+          git.add '.'
+          git.commit_all commit_message
+        end
         removed_files.clear unless removed_files.nil? || removed_files.empty?
         removed_directories.clear unless removed_directories.nil? || removed_directories.empty?
       end
