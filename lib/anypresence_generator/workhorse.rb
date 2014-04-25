@@ -56,6 +56,7 @@ module AnypresenceGenerator
           success! "Completed work!".freeze
           return true
         rescue
+          puts "\n" + $!.message
           puts $!.backtrace
           error! "Process has failed with the following error: #{$!.message}"
           return false
