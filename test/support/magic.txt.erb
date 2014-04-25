@@ -1,0 +1,5 @@
+<% generator.object_definitions.each do |object_definition| %>
+  Object Definition: <%= object_definition.name %>
+    Fields:
+      <%= render_partial name: 'magical_partial', locals: { fields: object_definition.field_definitions } %>
+<% end %>
