@@ -28,11 +28,13 @@ module AnypresenceGenerator
       end
     end
 
-    def initialize(json_payload: nil, auth_token: ( raise WorkableError.new('No Auth token provided.'.freeze) ), sensitive_values: {}, mock: false, dump_project_directory: nil)
+    def initialize(json_payload: nil, auth_token: ( raise WorkableError.new('No Auth token provided.'.freeze) ), git_user: nil, git_email: nil, sensitive_values: {}, mock: false, dump_project_directory: nil)
       steps.each { |step| raise WorkableError.new("No method named '#{step.to_s}' in this class.") unless respond_to?(step) }
       self.digest(json_payload: json_payload)
       self.mock = mock
       self.auth_token = auth_token
+      self.git_user = git_user
+      self.git_email = git_email
       self.sensitive_values = sensitive_values
       self.log_file = Tempfile.new(['logfile'.freeze,'txt'.freeze])
       self.dump_project_directory = dump_project_directory
@@ -50,11 +52,11 @@ module AnypresenceGenerator
         begin
           self.project_directory = File.join(dir, build.id.to_s)
           FileUtils.mkdir_p(project_directory)
-          setup_repository
           work
           success! "Completed work!".freeze
           return true
         rescue
+          raise $!
           error! "Process has failed with the following error: #{$!.message}"
           return false
         ensure
@@ -89,13 +91,27 @@ module AnypresenceGenerator
 
     def increment_step!(step)
       log "Incrementing step to #{step}..."
+      RestClient.post( build.writeable_log_url, File.open(log_file), multipart: true, content_type: 'text/plain' ) unless mock
       RestClient.put( build.increment_step_url, { step: step }.to_json, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock
+    end
+
+    def upload_artifacts
+      log 'Creating artifacts archive.'
+      artifacts = Tempfile.new(['artifacts','.zip'])
+      artifacts.close
+      exclude = ""
+      %w{.git/ tmp/ vendor/ .bundle/ git_archive.zip}.each { |ignore| exclude << %|--exclude="./#{ignore}" | }
+      if run_command(%|tar -cvzf "#{artifacts.path}" -C "#{project_directory}" #{exclude} "."|, silence: true)
+        log "Uploading artifacts archive"
+        RestClient.post( build.writeable_artifact_url, File.open(artifacts), multipart: true, content_type: 'application/zip' ) unless mock
+        FileUtils.cp(File.path(artifacts), "#{project_directory}/artifacts.zip")
+      end
     end
 
     private
 
     def steps
-      self.class._steps
+      [:setup_repository, :init_or_clone] + self.class._steps + [:commit_to_repository, :push_to_repository, :upload_artifacts]
     end
 
     def copy_working_directory
