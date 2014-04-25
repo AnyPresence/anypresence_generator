@@ -4,7 +4,7 @@ require "anypresence_generator/repository/git"
 module AnypresenceGenerator
   module Repository
 
-    attr_accessor :repository
+    attr_accessor :repository, :git_user, :git_email
 
     def init_or_clone
       if new_generation?
@@ -12,13 +12,13 @@ module AnypresenceGenerator
         repository.init
       else
         log "Retrieving project from source control"
-        repository.clone(true)
+        repository.clone(recursive: true)
       end
     end
 
-    def commit_to_repository(user_name: nil, user_email: nil, commit_message: nil)
+    def commit_to_repository
       log "Committing to local source control"
-      repository.commit(user_name, user_email, commit_message)
+      repository.commit(user_name: git_user, user_email: git_email, commit_message: "Generating version #{api_version.number}.")
     end
 
     def push_to_repository
@@ -29,9 +29,9 @@ module AnypresenceGenerator
     def setup_repository
       log 'Setting up repository.'
       if payload.repository.type.eql?("ApplicationDefinition::Repository::Archive".freeze)
-        self.repository = ::AnypresenceGenerator::Repository::Archive.new(repository_payload: payload.repository, directory: project_directory)
+        self.repository = ::AnypresenceGenerator::Repository::Archive.new(repository_payload: payload.repository, directory: project_directory, mock: mock)
       elsif payload.repository.type.eql?("ApplicationDefinition::Repository::Github".freeze)
-        self.repository = ::AnypresenceGenerator::Repository::Git.new(repository_payload: payload.repository, directory: project_directory)
+        self.repository = ::AnypresenceGenerator::Repository::Git.new(repository_payload: payload.repository, directory: project_directory, mock: mock)
       else
         raise WorkableError.new("Unsupported repository type: #{payload.repository.type}")
       end
