@@ -6,12 +6,13 @@ module AnypresenceGenerator
     class Git
       class GitError < StandardError; end
 
-      attr_accessor :git, :removed_directories, :removed_files, :git_url, :directory, :pushed
+      attr_accessor :git, :removed_directories, :removed_files, :git_url, :directory, :pushed, :mock
 
-      def initialize( repository_payload: repository_payload, directory: ( raise GitError.new("Directory is required.") ) )
+      def initialize( repository_payload: repository_payload, directory: ( raise GitError.new("Directory is required.") ), mock: false )
         self.git_url = repository_payload.url
         self.directory = directory
         self.pushed = repository_payload.pushed
+        self.mock = mock
       end
 
       def init
@@ -52,20 +53,22 @@ module AnypresenceGenerator
       def commit(user_name: nil, user_email: nil, commit_message: nil)
         git.config('user.name', user_name)
         git.config('user.email', user_email)
-        git.remove(removed_files) unless removed_files.blank?
-        git.remove(removed_directories, recursive: true) unless removed_directories.blank?
+        git.remove(removed_files) unless removed_files.nil? || removed_files.empty?
+        git.remove(removed_directories, recursive: true) unless removed_directories.nil? || removed_directories.empty?
         git.add '.'
         git.commit_all commit_message
-        removed_files.clear unless removed_files.blank?
-        removed_directories.clear unless removed_directories.blank?
+        removed_files.clear unless removed_files.nil? || removed_files.empty?
+        removed_directories.clear unless removed_directories.nil? || removed_directories.empty?
       end
 
       def push(remote: nil)
-        if remote
-          git.add_remote(remote, git_url)
-          git.push(git.remote(remote))
-        else
-          git.push git_url
+        unless mock
+          if remote
+            git.add_remote(remote, git_url)
+            git.push(git.remote(remote))
+          else
+            git.push git_url
+          end
         end
       end
 
