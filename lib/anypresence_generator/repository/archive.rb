@@ -1,3 +1,4 @@
+require 'open-uri'
 require "anypresence_generator/repository/git"
 
 module AnypresenceGenerator
@@ -5,8 +6,16 @@ module AnypresenceGenerator
     class Archive < ::AnypresenceGenerator::Repository::Git
 
       def clone(recursive: false)
-        init(directory)
-        git_archive = archive.to_file
+        init
+
+        git_archive = Tempfile.new(['git_archive','.zip'])
+        git_archive.close
+
+        File.open(File.path(git_archive), "wb") do |archive_file|
+          open(git_url, "rb") do |remote_file|
+            archive_file.write(remote_file.read)
+          end
+        end
         last_output = %x|tar -xf "#{File.path(git_archive)}" -C "#{directory}" 2>&1|
 
         unless $?.success?
@@ -30,7 +39,7 @@ module AnypresenceGenerator
         if remote
           super
         else
-          archive_source = Tempfile.new(['archive','.zip'])
+          archive_source = Tempfile.new(['git_archive','.zip'])
           archive_source.close
           if File.exists?("#{directory}/.gitignore")
             gitignore = File.read("#{directory}/.gitignore")
@@ -43,8 +52,8 @@ module AnypresenceGenerator
           unless $?.success?
             raise ::AnypresenceGenerator::Repository::Git::GitError.new("Git archiving failed with exit code: #{$?}\n#{last_output}")
           end
-          self.archive = File.open(archive_source)
-          save!
+          RestClient.post( git_url, File.open(archive_source), multipart: true, content_type: 'application/zip' ) unless mock
+          FileUtils.cp(File.path(archive_source), "#{directory}/git_archive.zip")
         end
       end
     end
