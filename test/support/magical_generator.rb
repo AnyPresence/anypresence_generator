@@ -24,7 +24,7 @@ class MagicalGeneratorWithTemplate < MagicalGenerator
 
   def three
     log 'I will generate a template...'
-    run_generators MagicalTemplate.new(generator: self)
+    run_templates MagicalTemplate.new(generator: self)
     log 'I generated a template!'
   end
 end
@@ -34,7 +34,9 @@ class MagicalGeneratorWithTemplateAndOutput < MagicalGenerator
 
   def three
     log 'I will generate a template...'
-    run_generators MagicalTemplateWithSpecificOutput.new(generator: self)
+    run_templates MagicalTemplateWithSpecificOutput.new(generator: self) do |file_location|
+      log "Writing to specific output file at #{file_location}"
+    end
     log 'I generated a template!'
   end
 end
