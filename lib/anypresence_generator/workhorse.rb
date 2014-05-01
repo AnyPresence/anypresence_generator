@@ -72,11 +72,11 @@ module AnypresenceGenerator
       end
     end
 
-    def run_generators(*generators)
-      generators.each do |generator|
-        raise WorkableError.new("Not a template!") unless generator.is_a?(AnypresenceGenerator::Template)
-        generator.write!
-        yield "#{project_directory}/#{generator.filename}" if block_given?
+    def run_templates(*templates)
+      templates.each do |template|
+        raise WorkableError.new("Not a template!") unless template.is_a?(AnypresenceGenerator::Template)
+        template.write!
+        yield template.fully_qualified_output_file if block_given?
       end
     end
 
