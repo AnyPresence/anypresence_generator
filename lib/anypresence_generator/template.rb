@@ -45,6 +45,10 @@ module AnypresenceGenerator
       template_file
     end
 
+    def fully_qualified_output_file
+      File.join(project_directory, output_path, output_file)
+    end
+
     def self.output_path(path)
       define_method(:output_path) { path }
     end
