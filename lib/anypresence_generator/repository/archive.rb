@@ -44,7 +44,7 @@ module AnypresenceGenerator
           if File.exists?("#{directory}/.gitignore")
             gitignore = File.read("#{directory}/.gitignore")
             exclude = ""
-            gitignore.split("\n").each { |ignore| exclude << %|--exclude="./#{ignore.start_with?('/') ? ignore.sub('/','') : ignore}" | unless ignore.start_with?('#') }
+            gitignore.split("\n").each { |ignore| exclude << %|--exclude="./#{ignore.start_with?('/') ? ignore.sub('/','') : ignore}" | if !ignore.start_with?('#') && !ignore.nil? && !ignore.blank? }
             last_output = %x|tar -cvzf "#{archive_source.path}" -C "#{directory}" #{exclude} "." 2>&1|
           else
             last_output = %x|tar -cvzf "#{archive_source.path}" -C "#{directory}" "." 2>&1|
