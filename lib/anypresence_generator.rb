@@ -1,4 +1,5 @@
 require 'recursive-open-struct'
+require 'fast_blank'
 
 require "anypresence_generator/version"
 require "anypresence_generator/template"
