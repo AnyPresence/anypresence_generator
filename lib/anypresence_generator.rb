@@ -4,6 +4,8 @@ require 'fast_blank'
 require "anypresence_generator/version"
 require "anypresence_generator/template"
 require "anypresence_generator/workhorse"
+require "anypresence_generator/generator"
+require "anypresence_generator/deployer"
 require "anypresence_generator/repository"
 require "anypresence_generator/command"
 require "anypresence_generator/log"
@@ -54,5 +56,3 @@ class RecursiveOpenStruct
     end
   end
 end
-
-require 'anypresence_generator/payload'
