@@ -3,7 +3,6 @@ require 'rest-client'
 require 'anypresence_generator/command'
 require 'anypresence_generator/log'
 require 'anypresence_generator/repository'
-require 'anypresence_generator/payload'
 require 'anypresence_generator/template'
 
 module AnypresenceGenerator
@@ -11,10 +10,9 @@ module AnypresenceGenerator
     include AnypresenceGenerator::Command
     include AnypresenceGenerator::Log
     include AnypresenceGenerator::Repository
-    include AnypresenceGenerator::Payload
     class WorkableError < StandardError; end
 
-    attr_accessor :mock, :auth_token, :project_directory, :dump_project_directory
+    attr_accessor :mock, :auth_token, :project_directory, :dump_project_directory, :workable
 
     class << self
       attr_accessor :_steps
@@ -30,7 +28,7 @@ module AnypresenceGenerator
 
     def initialize(json_payload: nil, auth_token: ( raise WorkableError.new('No Auth token provided.'.freeze) ), git_user: nil, git_email: nil, sensitive_values: {}, mock: false, dump_project_directory: nil)
       steps.each { |step| raise WorkableError.new("No method named '#{step.to_s}' in this class.") unless respond_to?(step) }
-      self.digest(json_payload: json_payload)
+      self.workable = digest(json_payload: json_payload)
       self.mock = mock
       self.auth_token = auth_token
       self.git_user = git_user
@@ -50,7 +48,7 @@ module AnypresenceGenerator
     def start!
       Dir.mktmpdir do |dir|
         begin
-          self.project_directory = File.join(dir, build.id.to_s)
+          self.project_directory = File.join(dir, workable.id.to_s)
           FileUtils.mkdir_p(project_directory)
           work
           success! "Completed work!".freeze
@@ -82,18 +80,18 @@ module AnypresenceGenerator
 
     def error!(message)
       log "Error: #{message}"
-      RestClient.put( build.error_url, nil, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock
+      RestClient.put( workable.error_url, nil, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock
     end
 
     def success!(message)
       log "Success: #{message}"
-      RestClient.put( build.success_url, nil, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock
+      RestClient.put( workable.success_url, nil, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock
     end
 
     def increment_step!(step)
       log "Incrementing step to #{step}..."
-      RestClient.post( build.writeable_log_url, File.open(log_file), multipart: true, content_type: 'text/plain' ) unless mock
-      RestClient.put( build.increment_step_url, { step: step }.to_json, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock
+      RestClient.post( workable.writeable_log_url, File.open(log_file), multipart: true, content_type: 'text/plain' ) unless mock
+      RestClient.put( workable.increment_step_url, { step: step }.to_json, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock
     end
 
     def upload_artifacts
@@ -104,7 +102,7 @@ module AnypresenceGenerator
       %w{.git/ tmp/ vendor/ .bundle/ git_archive.zip}.each { |ignore| exclude << %|--exclude="./#{ignore}" | }
       if run_command(%|tar -cvzf "#{artifacts.path}" -C "#{project_directory}" #{exclude} "."|, silence: true)
         log "Uploading artifacts archive"
-        RestClient.post( build.writeable_artifact_url, File.open(artifacts), multipart: true, content_type: 'application/zip' ) unless mock
+        RestClient.post( workable.writeable_artifact_url, File.open(artifacts), multipart: true, content_type: 'application/zip' ) unless mock
         FileUtils.cp(File.path(artifacts), "#{project_directory}/artifacts.zip")
       end
     end
@@ -112,7 +110,7 @@ module AnypresenceGenerator
     private
 
     def steps
-      [:setup_repository, :init_or_clone] + self.class._steps + [:commit_to_repository, :push_to_repository, :upload_artifacts]
+      raise 'Subclasses must implement!'
     end
 
     def copy_working_directory
