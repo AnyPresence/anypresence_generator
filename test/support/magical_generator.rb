@@ -1,7 +1,7 @@
 require 'anypresence_generator'
 require 'support/magical_template'
 
-class MagicalGenerator < AnypresenceGenerator::Workhorse
+class MagicalGenerator < AnypresenceGenerator::Generator
   steps :one, :two, :three
 
   def one
