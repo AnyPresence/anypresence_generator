@@ -1,6 +1,6 @@
 # AnypresenceGenerator
 
-    This gems handles the basic interactions between generation and deployment processes and the AP platform API.
+This gems handles the basic interactions between generation and deployment processes and the AP platform API.
 
 ## Installation
 
