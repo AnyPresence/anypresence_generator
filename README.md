@@ -53,7 +53,7 @@ A generator that evaluates templates:
       end
     end
 
-A generator that evaluates templates and do something special with the result:
+A generator that evaluates templates and does something special with the result:
 
     class MagicalGeneratorWithTemplateAndOutput < MagicalGenerator
       steps :one, :two, :three
@@ -67,7 +67,25 @@ A generator that evaluates templates and do something special with the result:
       end
     end
 
-Example template that uses the AP platform payload helpers (magic.txt.erb):
+Example template classes:
+
+    require 'anypresence_generator'
+    
+    class MagicalTemplate < AnypresenceGenerator::Template
+      template_file 'magic.txt'
+      templates_path File.dirname(__FILE__)
+      partials_path File.expand_path("partials", File.dirname(__FILE__))
+    end
+    
+    class MagicalTemplateWithSpecificOutput < AnypresenceGenerator::Template
+      template_file 'magic.txt'
+      output_file 'unicorn.rb'
+      output_path '/magical/path'
+      templates_path File.dirname(__FILE__)
+      partials_path File.expand_path("partials", File.dirname(__FILE__))
+    end
+
+Example template file referenced by a template class that uses the AP platform payload helpers (magic.txt.erb):
 
     <% generator.object_definitions.each do |object_definition| %>
       Object Definition: <%= object_definition.name %>
@@ -110,7 +128,7 @@ Deployers work the same way as the generators:
 
 ## Contributing
 
-1. Fork it ( http://github.com/<my-github-username>/anypresence_generator/fork )
+1. Fork it ( http://github.com/AnyPresence/anypresence_generator/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
