@@ -26,7 +26,8 @@ module AnypresenceGenerator
       end
     end
 
-    def initialize(json_payload: nil, auth_token: ( raise WorkableError.new('No Auth token provided.'.freeze) ), git_user: nil, git_email: nil, sensitive_values: {}, mock: false, dump_project_directory: nil)
+    def initialize(json_payload: nil, auth_token: ( raise WorkableError.new('No Auth token provided.'.freeze) ), git_user: nil, git_email: nil, \
+      sensitive_values: {}, mock: false, dump_project_directory: nil, log_to_stdout: false, log_timestamps: false)
       steps.each { |step| raise WorkableError.new("No method named '#{step.to_s}' in this class.") unless respond_to?(step) }
       self.workable = digest(json_payload: json_payload)
       self.mock = mock
@@ -35,6 +36,8 @@ module AnypresenceGenerator
       self.git_email = git_email
       self.sensitive_values = sensitive_values
       self.log_file = Tempfile.new(['logfile'.freeze,'txt'.freeze])
+      self.log_to_stdout = log_to_stdout
+      self.log_timestamps = log_timestamps
       self.dump_project_directory = dump_project_directory
     end
 
