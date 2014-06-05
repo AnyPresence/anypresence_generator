@@ -12,7 +12,7 @@ module AnypresenceGenerator
         filtered_command.gsub! sensitive, filtered
       end
 
-      log filtered_command, timestamp: false unless silence
+      log filtered_command unless silence
       last_output = nil
       Bundler.with_clean_env do
         last_output = `#{command_string} 2>&1`
