@@ -1,11 +1,11 @@
 module AnypresenceGenerator
   module Log
-    attr_accessor :log_file
+    attr_accessor :log_file, :log_to_stdout, :log_timestamps
 
-    def log(message, stdout: false, timestamp: false, extra_line: false)
-      puts(message) if stdout
+    def log(message, extra_line: false)
+      puts(message) if log_to_stdout
       log ||= ""
-      log << Time.now.to_s << ": " if timestamp
+      log << Time.now.to_s << ": " if log_timestamps
       log << message.to_s << "\n"
       log << "\n" if extra_line
       File.open(log_file.path, 'a'.freeze) do |file|
