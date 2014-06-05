@@ -28,7 +28,7 @@ class AnypresenceGeneratorTemplateTest < Test::Unit::TestCase
   def test_anypresence_generator_with_templates_and_output_file
     json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "support/api.txt"))
     Dir.mktmpdir do |dir|
-      generator = MagicalGeneratorWithTemplateAndOutput.new(json_payload: json, auth_token: 'test', mock: true, dump_project_directory: dir)
+      generator = MagicalGeneratorWithTemplateAndOutput.new(json_payload: json, auth_token: 'test', mock: true, dump_project_directory: dir, log_to_stdout: true, log_timestamps: true)
       assert generator.start!
       template_output = File.read(File.join(dir, MagicalTemplateWithSpecificOutput.new(generator: generator).output_path, MagicalTemplateWithSpecificOutput.new(generator: generator).output_file))
       generator.object_definitions.each do |object_defintion|
