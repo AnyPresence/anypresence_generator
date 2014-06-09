@@ -52,7 +52,7 @@ module AnypresenceGenerator
           unless $?.success?
             raise ::AnypresenceGenerator::Repository::Git::GitError.new("Git archiving failed with exit code: #{$?}\n#{last_output}")
           end
-          RestClient.post( git_url, File.open(archive_source), multipart: true, content_type: 'application/zip' ) unless mock
+          RestClient.put( git_url, File.open(archive_source), multipart: true, content_type: 'application/zip' ) unless mock
           FileUtils.cp(File.path(archive_source), "#{directory}/git_archive.zip")
         end
       end
