@@ -93,7 +93,7 @@ module AnypresenceGenerator
 
     def increment_step!(step)
       log "Incrementing step to #{step}..."
-      RestClient.post( workable.writeable_log_url, File.open(log_file), multipart: true, content_type: 'text/plain' ) unless mock
+      RestClient.put( workable.writeable_log_url, File.open(log_file), multipart: true, content_type: 'text/plain', content_disposition: 'inline' ) unless mock
       RestClient.put( workable.increment_step_url, { step: step }.to_json, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock
     end
 
@@ -105,7 +105,7 @@ module AnypresenceGenerator
       %w{.git/ tmp/ vendor/ .bundle/ git_archive.zip}.each { |ignore| exclude << %|--exclude="./#{ignore}" | }
       if run_command(%|tar -cvzf "#{artifacts.path}" -C "#{project_directory}" #{exclude} "."|, silence: true)
         log "Uploading artifacts archive"
-        RestClient.post( workable.writeable_artifact_url, File.open(artifacts), multipart: true, content_type: 'application/zip' ) unless mock
+        RestClient.put( workable.writeable_artifact_url, File.open(artifacts), multipart: true, content_type: 'application/zip' ) unless mock
         FileUtils.cp(File.path(artifacts), "#{project_directory}/artifacts.zip")
       end
     end
