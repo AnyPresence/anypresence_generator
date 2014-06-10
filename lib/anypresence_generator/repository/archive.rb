@@ -5,6 +5,14 @@ module AnypresenceGenerator
   module Repository
     class Archive < ::AnypresenceGenerator::Repository::Git
 
+      attr_accessor :readable_git_url, :writeable_git_url
+
+      def initialize( repository_payload: repository_payload, directory: ( raise GitError.new("Directory is required.") ), mock: false )
+        self.readable_git_url = repository_payload.readable_url
+        self.writeable_git_url = repository_payload.writeable_url
+        super
+      end
+
       def clone(recursive: false)
         init
 
@@ -12,7 +20,7 @@ module AnypresenceGenerator
         git_archive.close
 
         File.open(File.path(git_archive), "wb") do |archive_file|
-          open(git_url, "rb") do |remote_file|
+          open(readable_git_url, "rb") do |remote_file|
             archive_file.write(remote_file.read)
           end
         end
@@ -52,7 +60,7 @@ module AnypresenceGenerator
           unless $?.success?
             raise ::AnypresenceGenerator::Repository::Git::GitError.new("Git archiving failed with exit code: #{$?}\n#{last_output}")
           end
-          RestClient.put( git_url, File.open(archive_source), multipart: true, content_type: 'application/zip' ) unless mock
+          RestClient.put( writeable_git_url, File.open(archive_source), multipart: true, content_type: 'application/zip' ) unless mock
           FileUtils.cp(File.path(archive_source), "#{directory}/git_archive.zip")
         end
       end
