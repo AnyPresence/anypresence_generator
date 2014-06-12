@@ -83,17 +83,19 @@ module AnypresenceGenerator
 
     def error!(message)
       log "Error: #{message}"
+      write_log! rescue nil
       RestClient.put( workable.error_url, nil, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock
     end
 
     def success!(message)
       log "Success: #{message}"
+      write_log!
       RestClient.put( workable.success_url, nil, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock
     end
 
     def increment_step!(step)
       log "Incrementing step to #{step}..."
-      RestClient.put( workable.writeable_log_url, File.open(log_file), multipart: true, content_type: 'text/plain', content_disposition: 'inline' ) unless mock
+      write_log!
       RestClient.put( workable.increment_step_url, { step: step }.to_json, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock
     end
 
@@ -114,6 +116,10 @@ module AnypresenceGenerator
 
     def steps
       raise 'Subclasses must implement!'
+    end
+
+    def write_log!
+      RestClient.put( workable.writeable_log_url, File.open(log_file), multipart: true, content_type: 'text/plain', content_disposition: 'inline' ) unless mock
     end
 
     def copy_working_directory
