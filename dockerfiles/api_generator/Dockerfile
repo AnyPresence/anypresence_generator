@@ -1,3 +1,4 @@
+# version 0.0.1
 FROM anypresence/generator:0.0.1
 MAINTAINER Jeff Bozek, jbozek@anypresence.com
 
