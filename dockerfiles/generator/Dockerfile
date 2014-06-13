@@ -1,3 +1,4 @@
+# version 0.0.1
 FROM ubuntu:14.04
 MAINTAINER Jeff Bozek, jbozek@anypresence.com
 
@@ -14,6 +15,7 @@ RUN curl -L -s https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-l
 RUN tar -xvjf phantomjs-1.9.7-linux-x86_64.tar.bz2
 RUN mv phantomjs-1.9.7-linux-x86_64/bin/phantomjs /usr/bin
 RUN rm -rf phantomjs-1.9.7-linux-x86_64/
+RUN rm -f phantomjs-1.9.7-linux-x86_64.tar.bz2
 
 # Install Forego
 RUN curl -L -s https://godist.herokuapp.com/projects/ddollar/forego/releases/current/linux-amd64/forego > /bin/forego
