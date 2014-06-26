@@ -18,7 +18,7 @@ module AnypresenceGenerator
         IO.popen("#{command_string} 2>&1") do |io|
           until io.eof?
             buffer = io.gets
-            command_output << handle_command_output(buffer, abort, silence, filter)
+            command_output << handle_command_output(buffer.gsub(/\s*$/,''), abort, silence, filter)
           end
           io.close
         end
@@ -44,7 +44,7 @@ module AnypresenceGenerator
       end
 
       output = filtered_output || last_output
-      log output unless silence
+      log output unless silence || output.nil? || output.blank?
       output
     end
 
