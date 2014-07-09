@@ -29,9 +29,9 @@ module AnypresenceGenerator
     def setup_repository
       log 'Setting up repository.'
       if payload.repository.type.eql?("ApplicationDefinition::Repository::Archive".freeze)
-        self.repository = ::AnypresenceGenerator::Repository::Archive.new(repository_payload: payload.repository, directory: project_directory, mock: mock)
+        self.repository = ::AnypresenceGenerator::Repository::Archive.new(workhorse: self, repository_payload: payload.repository, directory: project_directory, mock: mock)
       elsif payload.repository.type.eql?("ApplicationDefinition::Repository::Github".freeze)
-        self.repository = ::AnypresenceGenerator::Repository::Git.new(repository_payload: payload.repository, directory: project_directory, mock: mock)
+        self.repository = ::AnypresenceGenerator::Repository::Git.new(workhorse: self, repository_payload: payload.repository, directory: project_directory, mock: mock)
       else
         raise WorkableError.new("Unsupported repository type: #{payload.repository.type}")
       end
