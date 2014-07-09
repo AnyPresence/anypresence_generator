@@ -23,7 +23,7 @@ module AnypresenceGenerator
           io.close
         end
       end
-      if 0 != $?.exitstatus
+      unless $?.success?
         if abort
           raise ::AnypresenceGenerator::Workhorse::WorkableError.new("command failed with exit code #{$?.exitstatus}")
         elsif !silence
