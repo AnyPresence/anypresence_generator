@@ -15,6 +15,7 @@ class MagicalGenerator < AnypresenceGenerator::Generator
   end
 
   def three
+    run_command("cd #{project_directory} && echo 'test' > test.txt")
     log 'I just did three!'
   end
 end
