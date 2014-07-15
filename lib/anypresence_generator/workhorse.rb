@@ -63,7 +63,7 @@ module AnypresenceGenerator
           return true
         rescue
           error! "Process has failed with the following error: #{$!.message}"
-          send(self.class._error_handler, $!) if respond_to?(self.class._error_handler)
+          send(self.class._error_handler, $!) if self.class._error_handler && respond_to?(self.class._error_handler)
           return false
         ensure
           copy_working_directory if dump_project_directory
