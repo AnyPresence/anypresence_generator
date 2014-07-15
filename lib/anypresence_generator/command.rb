@@ -13,7 +13,7 @@ module AnypresenceGenerator
 
       log filtered_command unless silence
 
-      command_output = ""
+      command_output = []
       Bundler.with_clean_env do
         IO.popen("#{command_string} 2>&1") do |io|
           until io.eof?
@@ -23,14 +23,15 @@ module AnypresenceGenerator
           io.close
         end
       end
-      unless $?.success?
+      if $?.success?
+        return command_output.join("\n"), true
+      else
         if abort
           raise ::AnypresenceGenerator::Workhorse::WorkableError.new("command failed with exit code #{$?.exitstatus}")
         elsif !silence
-          log "#{$?}, aborting"
+          log "#{$?}"
         end
-      else
-        command_output
+        return command_output.join("\n"), false
       end
     end
 
