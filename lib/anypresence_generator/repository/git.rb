@@ -23,13 +23,7 @@ module AnypresenceGenerator
       def clone(recursive: false)
         self.git = ::Git.clone(git_url, '', path: directory)
 
-        if recursive
-          Bundler.with_clean_env do
-            Dir.chdir(git.dir.to_s) do
-              workhorse.run_command("git submodule update --init --recursive")
-            end
-          end
-        end
+        workhorse.run_command("cd #{git.dir} && git submodule update --init --recursive") if recursive
       end
 
       def commit(user_name: nil, user_email: nil, commit_message: nil)
@@ -51,12 +45,8 @@ module AnypresenceGenerator
       end
 
       def add_submodule(local: nil, remote: nil, branch: 'master')
-        Bundler.with_clean_env do
-          Dir.chdir(git.dir.to_s) do
-            workhorse.run_command(%|git submodule deinit --force "#{local}" && git rm --force "#{local}" && git config -f .gitmodules --remove-section submodule."#{local}" && rm -Rf .git/modules/#{local}|, abort: false)
-            workhorse.run_command(%|git submodule add -b "#{branch}" --force "#{remote}" "#{local}"|)
-          end
-        end
+        workhorse.run_command(%|cd #{git.dir} && git submodule deinit --force "#{local}" && git rm --force "#{local}" && git config -f .gitmodules --remove-section submodule."#{local}" && rm -Rf .git/modules/#{local}|, abort: false)
+        workhorse.run_command(%|cd #{git.dir} && git submodule add -b "#{branch}" --force "#{remote}" "#{local}"|)
       end
     end
   end
