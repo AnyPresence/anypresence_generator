@@ -109,11 +109,11 @@ module AnypresenceGenerator
       artifacts.close
       exclude = ""
       %w{.git/ tmp/ vendor/ .bundle/ git_archive.zip}.each { |ignore| exclude << %|--exclude="./#{ignore}" | }
-      if run_command(%|tar -cvzf "#{artifacts.path}" -C "#{project_directory}" #{exclude} "."|, silence: true)
-        log "Uploading artifacts archive"
-        RestClient.put( workable.writeable_artifact_url, File.open(artifacts), multipart: true, content_type: 'application/zip' ) unless mock
-        FileUtils.cp(File.path(artifacts), "#{project_directory}/artifacts.zip")
-      end
+      run_command(%|tar -cvzf "#{artifacts.path}" -C "#{project_directory}" #{exclude} "."|, silence: true)
+      log "Uploading artifacts archive"
+      RestClient.put( workable.writeable_artifact_url, File.open(artifacts), multipart: true, content_type: 'application/zip' ) unless mock
+      RestClient.put( workable.artifacts_uploaded_url, nil, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock
+      FileUtils.cp(File.path(artifacts), "#{project_directory}/artifacts.zip")
     end
 
     private
