@@ -1,4 +1,4 @@
-require 'yajl/json_gem'
+require 'oj'
 
 module AnypresenceGenerator
   module Payload
@@ -9,7 +9,7 @@ module AnypresenceGenerator
       attr_accessor *PAYLOAD_ATTRIBUTES
 
       def digest(json_payload: ( raise WorkableError.new('No JSON payload provided.'.freeze) ) )
-        parsed_payload = RecursiveOpenStruct.new(JSON.parse(json_payload), recurse_over_arrays: true)
+        parsed_payload = RecursiveOpenStruct.new(Oj.load(json_payload), recurse_over_arrays: true)
         TYPES.each do |type|
           if parsed_payload.send(type)
             self.payload = parsed_payload.send(type)

@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "rake"
 
-  spec.add_runtime_dependency "yajl-ruby", "~> 1.2.0"
+  spec.add_runtime_dependency "oj", "~> 2.9.9"
   spec.add_runtime_dependency "rest-client", "~> 1.6.7"
   spec.add_runtime_dependency "git", "~> 1.2.7"
   spec.add_runtime_dependency "recursive-open-struct", "0.4.5"
