@@ -5,7 +5,7 @@ module AnypresenceGenerator
     module Deployment
 
       TYPES = [:deployment]
-      PAYLOAD_ATTRIBUTES = [:deployment, :build, :environment]
+      PAYLOAD_ATTRIBUTES = [:deployment, :build, :environment, :application_definition]
       attr_accessor :type, :payload
       attr_accessor *PAYLOAD_ATTRIBUTES
 
