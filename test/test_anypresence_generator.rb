@@ -42,6 +42,7 @@ class AnypresenceGeneratorTest < Test::Unit::TestCase
     assert generator.start!
     assert generator.log_content.include?('I just did one!')
     assert generator.log_content.include?('I just did two!')
+    assert generator.log_content.include?("Success?: true - Gemfile\nGemfile.lock")
     assert generator.log_content.include?('I just did three!')
   end
 

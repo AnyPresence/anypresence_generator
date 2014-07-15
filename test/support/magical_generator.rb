@@ -10,7 +10,8 @@ class MagicalGenerator < AnypresenceGenerator::Generator
 
   def two
     log 'I will do two...'
-    run_command("ls")
+    result, success = run_command("ls")
+    log "Success?: #{success} - #{result}"
     log 'I just did two!'
   end
 
