@@ -15,7 +15,7 @@ module AnypresenceGenerator
     attr_accessor :mock, :auth_token, :project_directory, :dump_project_directory, :workable
 
     class << self
-      attr_accessor :_steps
+      attr_accessor :_steps, :_error_handler
 
       def steps(*steps)
         if self._steps.nil? || self._steps.blank?
@@ -24,11 +24,16 @@ module AnypresenceGenerator
           self._steps.push(steps)
         end
       end
+
+      def error_handler(method_name)
+        self._error_handler = method_name
+      end
     end
 
     def initialize(json_payload: nil, auth_token: ( raise WorkableError.new('No Auth token provided.'.freeze) ), git_user: nil, git_email: nil, \
       sensitive_values: {}, mock: false, dump_project_directory: nil, log_to_stdout: false, log_timestamps: false)
       steps.each { |step| raise WorkableError.new("No method named '#{step.to_s}' in this class.") unless respond_to?(step) }
+      raise WorkableError.new("No method named '#{self.class._error_handler}' in this class.") if self.class._error_handler && !respond_to?(self.class._error_handler)
       self.workable = digest(json_payload: json_payload)
       self.mock = mock
       self.auth_token = auth_token
@@ -57,9 +62,8 @@ module AnypresenceGenerator
           success! "Completed work!".freeze
           return true
         rescue
-          puts "\n" + $!.message
-          puts $!.backtrace
           error! "Process has failed with the following error: #{$!.message}"
+          send(self.class._error_handler, $!) if respond_to?(self.class._error_handler)
           return false
         ensure
           copy_working_directory if dump_project_directory
@@ -67,7 +71,7 @@ module AnypresenceGenerator
           begin
             FileUtils.remove_entry project_directory
           rescue
-            log "Exception deleting file '#{dir.path}': #{$!.message}"
+            log "Exception deleting '#{project_directory}': #{$!.message}"
           end
         end
       end
