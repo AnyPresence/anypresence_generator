@@ -41,3 +41,17 @@ class MagicalGeneratorWithTemplateAndOutput < MagicalGenerator
     log 'I generated a template!'
   end
 end
+
+class MagicalGeneratorWithErrorHandler < MagicalGenerator
+  steps :one, :two, :three, :fail
+  error_handler :handle_exception
+
+  def fail
+    raise 'Exception handler testing time.'
+  end
+
+  def handle_exception(exception)
+    # You can do stuff like notify Airbrake here...
+    log "Error handled!: #{exception.message}"
+  end
+end
