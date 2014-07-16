@@ -3,7 +3,6 @@ require 'oj'
 module AnypresenceGenerator
   module Payload
     module Deployment
-
       TYPES = [:deployment]
       PAYLOAD_ATTRIBUTES = [:deployment, :build, :environment, :application_definition]
       attr_accessor :type, :payload
