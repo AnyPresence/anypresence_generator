@@ -12,7 +12,7 @@ module AnypresenceGenerator
     include AnypresenceGenerator::Repository
     class WorkableError < StandardError; end
 
-    attr_accessor :mock, :auth_token, :project_directory, :dump_project_directory, :workable
+    attr_accessor :mock, :auth_token, :project_directory, :dump_project_directory, :workable, :raw_payload
 
     class << self
       attr_accessor :_steps, :_error_handler
@@ -34,6 +34,7 @@ module AnypresenceGenerator
       sensitive_values: {}, mock: false, dump_project_directory: nil, log_to_stdout: false, log_timestamps: false)
       steps.each { |step| raise WorkableError.new("No method named '#{step.to_s}' in this class.") unless respond_to?(step) }
       raise WorkableError.new("No method named '#{self.class._error_handler}' in this class.") if self.class._error_handler && !respond_to?(self.class._error_handler)
+      self.raw_payload = json_payload
       self.workable = digest(json_payload: json_payload)
       self.mock = mock
       self.auth_token = auth_token
