@@ -21,7 +21,6 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "oj", "~> 2.9.9"
   spec.add_runtime_dependency "rest-client", "~> 1.6.7"
-  spec.add_runtime_dependency "git", "~> 1.2.7"
   spec.add_runtime_dependency "recursive-open-struct", "0.4.5"
   spec.add_runtime_dependency "fast_blank", "~> 0.0.2"
   spec.add_runtime_dependency "bundler", "~> 1.5"
