@@ -9,6 +9,12 @@ class AnypresenceGeneratorTest < Test::Unit::TestCase
     end
   end
 
+  def test_anypresence_generator_workhorse_retains_raw_payload
+    json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "support/api.txt"))
+    generator = MagicalGenerator.new(json_payload: json, auth_token: 'test', mock: true)
+    assert_equal generator.raw_payload, json
+  end
+
   def test_anypresence_generator_workhorse_parses_api_payload
     json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "support/api.txt"))
     generator = MagicalGenerator.new(json_payload: json, auth_token: 'test', mock: true)
