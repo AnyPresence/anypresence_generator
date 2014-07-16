@@ -25,7 +25,7 @@ module AnypresenceGenerator
           end
         end
         workhorse.run_command(%|tar -xf "#{File.path(git_archive)}" -C "#{directory}"|)
-        workhorse.run_command(%|cd #{git.dir} && git submodule update --init --recursive|) if recursive
+        workhorse.run_command(%|cd #{directory} && git submodule update --init --recursive|) if recursive
       end
 
       def push(remote: nil)
