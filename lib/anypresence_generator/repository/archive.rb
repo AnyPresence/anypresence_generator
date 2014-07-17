@@ -7,7 +7,7 @@ module AnypresenceGenerator
 
       attr_accessor :readable_git_url, :writeable_git_url
 
-      def initialize( workhorse: , repository_payload: repository_payload, directory: ( raise GitError.new("Directory is required.") ), mock: false )
+      def initialize( workhorse: , repository_payload: repository_payload, directory: ( raise GitError.new("Directory is required.") ), user_name:, user_email:, mock: false )
         self.readable_git_url = repository_payload.readable_url
         self.writeable_git_url = repository_payload.writeable_url
         super
