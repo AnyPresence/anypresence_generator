@@ -16,9 +16,9 @@ module AnypresenceGenerator
       end
     end
 
-    def commit_to_repository
-      log "Committing to local source control"
-      repository.commit(user_name: git_user, user_email: git_email, commit_message: "Generating version #{api_version.number}.")
+    def commit_to_repository(message: "Generating version #{api_version.number}.")
+      log "Committing to local source control: #{message}"
+      repository.commit(commit_message: message)
     end
 
     def push_to_repository
@@ -29,9 +29,9 @@ module AnypresenceGenerator
     def setup_repository
       log 'Setting up repository.'
       if payload.repository.type.eql?("ApplicationDefinition::Repository::Archive".freeze)
-        self.repository = ::AnypresenceGenerator::Repository::Archive.new(workhorse: self, repository_payload: payload.repository, directory: project_directory, mock: mock)
+        self.repository = ::AnypresenceGenerator::Repository::Archive.new(workhorse: self, repository_payload: payload.repository, directory: project_directory, user_name: git_user, user_email: git_email, mock: mock)
       elsif payload.repository.type.eql?("ApplicationDefinition::Repository::Github".freeze)
-        self.repository = ::AnypresenceGenerator::Repository::Git.new(workhorse: self, repository_payload: payload.repository, directory: project_directory, mock: mock)
+        self.repository = ::AnypresenceGenerator::Repository::Git.new(workhorse: self, repository_payload: payload.repository, directory: project_directory, user_name: git_user, user_email: git_email, mock: mock)
       else
         raise WorkableError.new("Unsupported repository type: #{payload.repository.type}")
       end
