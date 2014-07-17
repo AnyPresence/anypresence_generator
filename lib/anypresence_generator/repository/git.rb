@@ -5,12 +5,14 @@ module AnypresenceGenerator
     class Git
       class GitError < StandardError; end
 
-      attr_accessor :workhorse, :git_url, :directory, :pushed, :mock
+      attr_accessor :workhorse, :user_name, :user_email, :git_url, :directory, :pushed, :mock
 
-      def initialize( workhorse: , repository_payload: repository_payload, directory: ( raise GitError.new("Directory is required.") ), mock: false )
+      def initialize( workhorse: , repository_payload: repository_payload, directory: ( raise GitError.new("Directory is required.") ), user_name:, user_email:, mock: false )
         self.workhorse = workhorse
         self.git_url = repository_payload.url
         self.directory = directory
+        self.user_name = user_name
+        self.user_email = user_email
         self.pushed = repository_payload.pushed
         self.mock = mock
       end
@@ -25,7 +27,7 @@ module AnypresenceGenerator
         workhorse.run_command(%|cd #{directory} && git submodule update --init --recursive|) if recursive
       end
 
-      def commit(user_name: nil, user_email: nil, commit_message: nil)
+      def commit(commit_message: nil)
         workhorse.run_command(%|cd #{directory} && git config --local user.name "#{user_name}"|)
         workhorse.run_command(%|cd #{directory} && git config --local user.email "#{user_email}"|)
         workhorse.run_command(%|cd #{directory} && git add --all -- "."|)
