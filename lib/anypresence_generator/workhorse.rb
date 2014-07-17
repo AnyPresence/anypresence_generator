@@ -30,10 +30,11 @@ module AnypresenceGenerator
       end
     end
 
-    def initialize(json_payload: nil, auth_token: ( raise WorkableError.new('No Auth token provided.'.freeze) ), git_user: nil, git_email: nil, \
+    def initialize(json_payload: nil, auth_token: ( raise WorkableError.new('No Auth token provided.'.freeze) ), git_user:, git_email:, \
       sensitive_values: {}, mock: false, dump_project_directory: nil, log_to_stdout: false, log_timestamps: false)
       steps.each { |step| raise WorkableError.new("No method named '#{step.to_s}' in this class.") unless respond_to?(step) }
       raise WorkableError.new("No method named '#{self.class._error_handler}' in this class.") if self.class._error_handler && !respond_to?(self.class._error_handler)
+      raise WorkableError.new("Git user and email cannot be nil.") if git_user.nil? || git_email.nil?
       self.raw_payload = json_payload
       self.workable = digest(json_payload: json_payload)
       self.mock = mock
