@@ -5,13 +5,13 @@ class AnypresenceDeployerTest < Test::Unit::TestCase
   def test_anypresence_deployer_workhorse_subclasses
     json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "support/heroku.txt"))
     assert_nothing_raised do
-      MagicalDeployer.new(json_payload: json, auth_token: 'test', mock: true)
+      MagicalDeployer.new(json_payload: json, auth_token: 'test', git_user: 'Git User', git_email: 'git@example.com', mock: true)
     end
   end
 
   def test_anypresence_deployer_workhorse_parses_heroku_payload
     json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "support/heroku.txt"))
-    deployer = MagicalDeployer.new(json_payload: json, auth_token: 'test', mock: true)
+    deployer = MagicalDeployer.new(json_payload: json, auth_token: 'test', git_user: 'Git User', git_email: 'git@example.com', mock: true)
     assert_not_nil deployer.deployment
     assert_not_nil deployer.build
     assert_not_nil deployer.payload.repository
@@ -23,7 +23,7 @@ class AnypresenceDeployerTest < Test::Unit::TestCase
 
   def test_anypresence_deployer_workhorse_parses_s3_payload
     json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "support/s3.txt"))
-    deployer = MagicalDeployer.new(json_payload: json, auth_token: 'test', mock: true)
+    deployer = MagicalDeployer.new(json_payload: json, auth_token: 'test', git_user: 'Git User', git_email: 'git@example.com', mock: true)
     assert_not_nil deployer.deployment
     assert_not_nil deployer.build
     assert_not_nil deployer.payload.repository
@@ -32,7 +32,7 @@ class AnypresenceDeployerTest < Test::Unit::TestCase
 
   def test_anypresence_deployer_workhorse_executes_steps_during_processing
     json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "support/heroku.txt"))
-    deployer = MagicalDeployer.new(json_payload: json, auth_token: 'test', mock: true)
+    deployer = MagicalDeployer.new(json_payload: json, auth_token: 'test', git_user: 'Git User', git_email: 'git@example.com', mock: true)
     assert deployer.start!
     assert deployer.log_content.include?('Preparing deployment.')
     assert deployer.log_content.include?('I will setup...')
@@ -43,7 +43,7 @@ class AnypresenceDeployerTest < Test::Unit::TestCase
 
   def test_anypresence_generator_workhorse_setups_repository_during_processing
     json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "support/heroku.txt"))
-    deployer = MagicalDeployer.new(json_payload: json, auth_token: 'test', mock: true)
+    deployer = MagicalDeployer.new(json_payload: json, auth_token: 'test', git_user: 'Git User', git_email: 'git@example.com', mock: true)
     assert deployer.start!
     assert_not_nil deployer.repository
   end

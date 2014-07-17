@@ -5,7 +5,7 @@ class AnypresenceGeneratorCommandTest < Test::Unit::TestCase
 
   def setup
     json = File.read(File.join(File.expand_path(File.dirname(__FILE__)), "support/api.txt"))
-    @generator = MagicalGenerator.new(json_payload: json, auth_token: 'test', mock: true)
+    @generator = MagicalGenerator.new(json_payload: json, auth_token: 'test', git_user: 'Git User', git_email: 'git@example.com', mock: true)
   end
 
   def test_anypresence_command
