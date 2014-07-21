@@ -37,10 +37,10 @@ module AnypresenceGenerator
       def push(remote_name: nil, remote_url: nil)
         unless mock
           if remote_name
-            run_command(%|cd #{directory} && git remote add #{remote_name} #{remote_url}|)
-            run_command(%|cd #{directory} && git push #{remote_name} master|)
+            workhorse.run_command(%|cd #{directory} && git remote add #{remote_name} #{remote_url}|)
+            workhorse.run_command(%|cd #{directory} && git push #{remote_name} master|)
           else
-            run_command(%|cd #{directory} && git push origin master|)
+            workhorse.run_command(%|cd #{directory} && git push origin master|)
           end
         end
       end
