@@ -46,7 +46,7 @@ module AnypresenceGenerator
       end
 
       def add_submodule(local: nil, remote: nil, branch: 'master')
-        workhorse.run_command(%|cd #{directory} && git submodule deinit --force "#{local}" && git rm --force "#{local}" && git config -f .gitmodules --remove-section submodule."#{local}" && rm -Rf .git/modules/#{local}|, abort: false)
+        workhorse.run_command(%|cd #{directory} && git submodule deinit --force "#{local}" && git rm --force "#{local}" && rm -Rf .git/modules/#{local}|, abort: false)
         workhorse.run_command(%|cd #{directory} && git submodule add -b "#{branch}" --force "#{remote}" "#{local}"|)
       end
     end
