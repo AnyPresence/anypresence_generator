@@ -18,20 +18,20 @@ module AnypresenceGenerator
       end
 
       def init
-        workhorse.run_command(%|cd #{directory} && git init|)
+        workhorse.run_command(%|cd #{directory} && git init|, silence: true)
         workhorse.run_command(%|cd #{directory} && git remote add origin #{git_url}|) if git_url
       end
 
       def clone(recursive: false)
-        workhorse.run_command(%|cd #{directory} && git clone #{git_url} .|)
-        workhorse.run_command(%|cd #{directory} && git submodule update --init --recursive|) if recursive
+        workhorse.run_command(%|cd #{directory} && git clone #{git_url} .|, silence: true)
+        workhorse.run_command(%|cd #{directory} && git submodule update --init --recursive|, silence: true) if recursive
       end
 
       def commit(commit_message: nil)
-        workhorse.run_command(%|cd #{directory} && git config --local user.name "#{user_name}"|)
-        workhorse.run_command(%|cd #{directory} && git config --local user.email "#{user_email}"|)
-        workhorse.run_command(%|cd #{directory} && git add --all -- "."|)
-        workhorse.run_command(%|cd #{directory} && git commit -m "#{commit_message}"|)
+        workhorse.run_command(%|cd #{directory} && git config --local user.name "#{user_name}"|, silence: true)
+        workhorse.run_command(%|cd #{directory} && git config --local user.email "#{user_email}"|, silence: true)
+        workhorse.run_command(%|cd #{directory} && git add --all -- "."|, silence: true)
+        workhorse.run_command(%|cd #{directory} && git commit -m "#{commit_message}"|, silence: true)
       end
 
       def push(remote_name: nil, remote_url: nil)
@@ -46,12 +46,12 @@ module AnypresenceGenerator
       end
 
       def add_submodule(local: nil, remote: nil, branch: 'master')
-        workhorse.run_command(%|cd #{directory} && git submodule deinit --force "#{local}"|, abort: false)
-        workhorse.run_command(%|cd #{directory} && git rm --force "#{local}"|, abort: false)
-        workhorse.run_command(%|cd #{directory} && git rm --cached "#{local}"|, abort: false)
-        workhorse.run_command(%|cd #{directory} && git config -f .gitmodules --remove-section submodule."#{local}"|, abort: false)
-        workhorse.run_command(%|cd #{directory} && git config -f .git/config --remove-section submodule."#{local}"|, abort: false)
-        workhorse.run_command(%|cd #{directory} && rm -Rf .git/modules/#{local}|, abort: false)
+        workhorse.run_command(%|cd #{directory} && git submodule deinit --force "#{local}"|, abort: false, silence: true)
+        workhorse.run_command(%|cd #{directory} && git rm --force "#{local}"|, abort: false, silence: true)
+        workhorse.run_command(%|cd #{directory} && git rm --cached "#{local}"|, abort: false, silence: true)
+        workhorse.run_command(%|cd #{directory} && git config -f .gitmodules --remove-section submodule."#{local}"|, abort: false, silence: true)
+        workhorse.run_command(%|cd #{directory} && git config -f .git/config --remove-section submodule."#{local}"|, abort: false, silence: true)
+        workhorse.run_command(%|cd #{directory} && rm -Rf .git/modules/#{local}|, abort: false, silence: true)
         workhorse.run_command(%|cd #{directory} && git submodule add -b "#{branch}" --force "#{remote}" "#{local}"|)
       end
     end
