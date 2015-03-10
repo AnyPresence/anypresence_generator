@@ -5,9 +5,9 @@ module AnypresenceGenerator
     class Git
       class GitError < StandardError; end
 
-      attr_accessor :workhorse, :user_name, :user_email, :git_url, :directory, :pushed, :mock
+      attr_accessor :workhorse, :user_name, :user_email, :git_url, :directory, :pushed, :mock, :max_network_retry
 
-      def initialize( workhorse: , repository_payload: repository_payload, directory: ( raise GitError.new("Directory is required.") ), user_name:, user_email:, mock: false )
+      def initialize( workhorse: , repository_payload: repository_payload, directory: ( raise GitError.new("Directory is required.") ), user_name:, user_email:, mock: false, max_network_retry: )
         self.workhorse = workhorse
         self.git_url = repository_payload.url
         self.directory = directory
@@ -15,6 +15,7 @@ module AnypresenceGenerator
         self.user_email = user_email
         self.pushed = repository_payload.pushed
         self.mock = mock
+        self.max_network_retry = max_network_retry
       end
 
       def init

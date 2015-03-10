@@ -29,9 +29,9 @@ module AnypresenceGenerator
     def setup_repository
       log 'Setting up repository.'
       if payload.repository.type.eql?("ApplicationDefinition::Repository::Archive".freeze)
-        self.repository = ::AnypresenceGenerator::Repository::Archive.new(workhorse: self, repository_payload: payload.repository, directory: project_directory, user_name: git_user, user_email: git_email, mock: mock)
+        self.repository = ::AnypresenceGenerator::Repository::Archive.new(workhorse: self, repository_payload: payload.repository, directory: project_directory, user_name: git_user, user_email: git_email, mock: mock, max_network_retry: max_network_retry)
       elsif payload.repository.type.eql?("ApplicationDefinition::Repository::Github".freeze)
-        self.repository = ::AnypresenceGenerator::Repository::Git.new(workhorse: self, repository_payload: payload.repository, directory: project_directory, user_name: git_user, user_email: git_email, mock: mock)
+        self.repository = ::AnypresenceGenerator::Repository::Git.new(workhorse: self, repository_payload: payload.repository, directory: project_directory, user_name: git_user, user_email: git_email, mock: mock, max_network_retry: max_network_retry)
       else
         raise WorkableError.new("Unsupported repository type: #{payload.repository.type}")
       end

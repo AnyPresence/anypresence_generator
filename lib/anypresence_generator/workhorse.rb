@@ -4,15 +4,17 @@ require 'anypresence_generator/command'
 require 'anypresence_generator/log'
 require 'anypresence_generator/repository'
 require 'anypresence_generator/template'
+require 'anypresence_generator/utils/wrap_calls'
 
 module AnypresenceGenerator
   class Workhorse
     include AnypresenceGenerator::Command
     include AnypresenceGenerator::Log
     include AnypresenceGenerator::Repository
+    include AnypresenceGenerator::Utils::WrapCalls
     class WorkableError < StandardError; end
 
-    attr_accessor :mock, :auth_token, :project_directory, :dump_project_directory, :workable, :raw_payload
+    attr_accessor :mock, :auth_token, :project_directory, :dump_project_directory, :workable, :raw_payload, :max_network_retry
 
     class << self
       attr_accessor :_steps, :_error_handler
@@ -31,7 +33,7 @@ module AnypresenceGenerator
     end
 
     def initialize(json_payload: nil, auth_token: ( raise WorkableError.new('No Auth token provided.'.freeze) ), git_user:, git_email:, \
-      sensitive_values: {}, mock: false, dump_project_directory: nil, log_to_stdout: false, log_timestamps: false)
+      sensitive_values: {}, mock: false, dump_project_directory: nil, log_to_stdout: false, log_timestamps: false, max_network_retry: nil)
       steps.each { |step| raise WorkableError.new("No method named '#{step.to_s}' in this class.") unless respond_to?(step) }
       raise WorkableError.new("No method named '#{self.class._error_handler}' in this class.") if self.class._error_handler && !respond_to?(self.class._error_handler)
       raise WorkableError.new("Git user and email cannot be nil.") if git_user.nil? || git_email.nil?
@@ -46,6 +48,7 @@ module AnypresenceGenerator
       self.log_to_stdout = log_to_stdout
       self.log_timestamps = log_timestamps
       self.dump_project_directory = dump_project_directory
+      self.max_network_retry = max_network_retry
     end
 
     def work
@@ -90,19 +93,19 @@ module AnypresenceGenerator
     def error!(message)
       log "Error: #{message}"
       write_log! rescue nil
-      RestClient.put( workable.error_url, nil, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock
+      with_retry(max_network_retry) { RestClient.put( workable.error_url, nil, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock }
     end
 
     def success!(message)
       log "Success: #{message}"
       write_log!
-      RestClient.put( workable.success_url, nil, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock
+      with_retry(max_network_retry) { RestClient.put( workable.success_url, nil, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock }
     end
 
     def increment_step!(step)
       log "Incrementing step to #{step}..."
       write_log!
-      RestClient.put( workable.increment_step_url, { step: step }.to_json, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock
+      with_retry(max_network_retry) { RestClient.put( workable.increment_step_url, { step: step }.to_json, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock }
     end
 
     def upload_artifacts
@@ -113,8 +116,8 @@ module AnypresenceGenerator
       %w{.git/ tmp/ vendor/ .bundle/ git_archive.zip}.each { |ignore| exclude << %|--exclude="./#{ignore}" | }
       run_command(%|tar -cvzf "#{artifacts.path}" -C "#{project_directory}" #{exclude} "."|, silence: true)
       log "Uploading artifacts archive"
-      RestClient.put( workable.writeable_artifact_url, File.open(artifacts), multipart: true, content_type: 'application/zip' ) unless mock
-      RestClient.put( workable.artifacts_uploaded_url, nil, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock
+      with_retry(max_network_retry) { RestClient.put( workable.writeable_artifact_url, File.open(artifacts), multipart: true, content_type: 'application/zip' ) unless mock }
+      with_retry(max_network_retry) { RestClient.put( workable.artifacts_uploaded_url, nil, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock }
       FileUtils.cp(File.path(artifacts), "#{project_directory}/artifacts.zip")
     end
 
@@ -125,7 +128,7 @@ module AnypresenceGenerator
     end
 
     def write_log!
-      RestClient.put( workable.writeable_log_url, File.open(log_file), multipart: true, content_type: 'text/plain', content_disposition: 'inline' ) unless mock
+      with_retry(max_network_retry) { RestClient.put( workable.writeable_log_url, File.open(log_file), multipart: true, content_type: 'text/plain', content_disposition: 'inline' ) unless mock }
     end
 
     def copy_working_directory
