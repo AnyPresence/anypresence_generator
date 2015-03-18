@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "rake"
 
-  spec.add_runtime_dependency "oj", "~> 2.9.9"
+  spec.add_runtime_dependency "oj", "~> 2.12.1"
   spec.add_runtime_dependency "rest-client", "~> 1.6.7"
   spec.add_runtime_dependency "recursive-open-struct", "0.4.5"
   spec.add_runtime_dependency "fast_blank", "~> 0.0.2"
