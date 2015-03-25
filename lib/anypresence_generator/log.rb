@@ -2,6 +2,8 @@ module AnypresenceGenerator
   module Log
     attr_accessor :log_file, :log_to_stdout, :log_timestamps
 
+    ENCODING_OPTIONS = { invalid: :replace, undef: :replace, replace: "" }
+
     def log(message, extra_line: false)
       puts(message) if log_to_stdout
       log ||= ""
@@ -9,7 +11,7 @@ module AnypresenceGenerator
       log << message.to_s << "\n"
       log << "\n" if extra_line
       File.open(log_file.path, 'a'.freeze) do |file|
-        file.puts(log)
+        file.puts(log.encode(Encoding.find('ASCII'), ENCODING_OPTIONS))
         file.close
       end
       log
