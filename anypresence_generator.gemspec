@@ -18,6 +18,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_development_dependency "rake"
+  spec.add_development_dependency "test-unit"
 
   spec.add_runtime_dependency "oj", "~> 2.12.1"
   spec.add_runtime_dependency "rest-client", "~> 1.6.7"
