@@ -1,5 +1,5 @@
-# anypresence/generator:0.0.2
-# version 0.0.2
+# anypresence/generator:0.0.3
+# version 0.0.3
 FROM ubuntu:14.04
 MAINTAINER Jeff Bozek, jbozek@anypresence.com
 
