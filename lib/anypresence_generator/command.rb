@@ -5,6 +5,8 @@ module AnypresenceGenerator
 
     attr_accessor :sensitive_values
 
+    REGEXP_COLOR_PATTERN = /\e\[([0-9]+)m(.+?)\e\[0m|([^\e]+)/m
+
     def run_command(command_string, abort: true, silence: false, filter: nil)
       filtered_command = command_string.clone
       sensitive_values.each do |sensitive, filtered|
@@ -45,8 +47,15 @@ module AnypresenceGenerator
       end
 
       output = filtered_output || last_output
+      output = uncolorize(output)
       log output unless silence || output.nil? || output.blank?
       output
+    end
+
+    def uncolorize(colored_str)
+      cleaned_str = colored_str.scan(REGEXP_COLOR_PATTERN).inject("") do |str, match|
+        str << (match[1] || match[2])
+      end
     end
 
   end
