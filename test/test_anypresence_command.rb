@@ -27,4 +27,10 @@ class AnypresenceGeneratorCommandTest < Test::Unit::TestCase
       @generator.run_command('magical_command_that_does_not_exist')
     end
   end
+
+  def test_anypresence_command_should_delay_logging_until_command_finishes
+    assert @generator.log_content.strip.empty?
+    @generator.run_command("echo test", delay_logging: true, filter: Proc.new { |o| p "msg #{o}"; o = "=> #{o}"; })
+    assert @generator.log_content.strip =~ /echo test\n=> test/
+  end
 end
