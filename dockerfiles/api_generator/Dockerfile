@@ -1,6 +1,6 @@
-# anypresence/api_generator:0.0.3
-# version 0.0.3
-FROM anypresence/generator:0.0.3
+# anypresence/api_generator:0.0.4
+# version 0.0.4
+FROM anypresence/generator:0.0.4
 MAINTAINER Jeff Bozek, jbozek@anypresence.com
 
 # Install database dependencies

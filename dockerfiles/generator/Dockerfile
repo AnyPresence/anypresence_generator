@@ -1,15 +1,15 @@
-# anypresence/generator:0.0.3
-# version 0.0.3
+# anypresence/generator:0.0.4
+# version 0.0.4
 FROM ubuntu:14.04
 MAINTAINER Jeff Bozek, jbozek@anypresence.com
 
 ENV LC_ALL en_US.UTF-8
 
-# Install library dependencies, PhantomJS, Forego, and Ruby 2.2.1
+# Install library dependencies, PhantomJS, Forego, and Ruby 2.2.3
 RUN apt-get -y update && apt-get -y upgrade && \
     apt-get -y install build-essential zlib1g-dev libssl-dev \
     libreadline6 libreadline6-dev libyaml-dev curl openssl git \
-    chrpath git-core libfontconfig1-dev libffi6 libffi-dev redis-server \
+    chrpath git-core libfontconfig1-dev libffi6 libffi-dev redis-server zip unzip \
     nodejs npm && ln /usr/bin/nodejs /usr/bin/node && \
     curl -L -s https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-linux-x86_64.tar.bz2 > phantomjs-1.9.7-linux-x86_64.tar.bz2 && \
     tar -xvjf phantomjs-1.9.7-linux-x86_64.tar.bz2 && \
@@ -19,7 +19,7 @@ RUN apt-get -y update && apt-get -y upgrade && \
     curl -L -s https://godist.herokuapp.com/projects/ddollar/forego/releases/current/linux-amd64/forego > /bin/forego && \
     chmod a+x /bin/forego && \
     locale-gen en_US.UTF-8 && update-locale LANG=en_US.UTF-8 && \
-    curl -L ftp://ftp.ruby-lang.org/pub/ruby/2.2/ruby-2.2.1.tar.bz2 | tar -xj -C /tmp && \
-    cd /tmp/ruby-2.2.1 && ./configure --disable-install-doc && make install clean && cd / && \
-    gem update --system && rm -r /tmp/ruby-2.2.1 && \
+    curl -L ftp://ftp.ruby-lang.org/pub/ruby/2.2/ruby-2.2.3.tar.bz2 | tar -xj -C /tmp && \
+    cd /tmp/ruby-2.2.3 && ./configure --disable-install-doc && make install clean && cd / && \
+    gem update --system && rm -r /tmp/ruby-2.2.3 && \
     echo "gem: --no-ri --no-rdoc" > ~/.gemrc && gem install bundler
