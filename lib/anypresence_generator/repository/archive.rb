@@ -26,7 +26,11 @@ module AnypresenceGenerator
             archive_file.write(remote_file.read)
           end
         end
-        workhorse.run_command(%|tar -xf "#{File.path(git_archive)}" -C "#{directory}"|, silence: true)
+        if (workhorse.run_command(%|file -Ib #{File.path(git_archive)}|, silence: true).first.start_with?("application/zip;".freeze))
+          workhorse.run_command(%|unzip "#{File.path(git_archive)}" -d "#{directory}"|, silence: true)
+        else
+          workhorse.run_command(%|tar -xf "#{File.path(git_archive)}" -C "#{directory}"|, silence: true)
+        end
         workhorse.run_command(%|cd #{directory} && git submodule update --init --recursive|) if recursive
       end
 
@@ -36,13 +40,14 @@ module AnypresenceGenerator
         else
           archive_source = Tempfile.new(['git_archive','.zip'])
           archive_source.close
+          FileUtils.rm(archive_source)
           if File.exists?("#{directory}/.gitignore")
             gitignore = File.read("#{directory}/.gitignore")
             exclude = ""
             gitignore.split("\n").each { |ignore| exclude << %|--exclude="./#{ignore.start_with?('/') ? ignore.sub('/','') : ignore}" | if !ignore.start_with?('#') && !ignore.nil? && !ignore.blank? }
-            workhorse.run_command(%|tar -cvzf "#{archive_source.path}" -C "#{directory}" #{exclude} "."|, silence: true)
+            workhorse.run_command(%|zip -r #{archive_source.path} "#{directory}" #{exclude}|, silence: true)
           else
-            workhorse.run_command(%|tar -cvzf "#{archive_source.path}" -C "#{directory}" "."|, silence: true)
+            workhorse.run_command(%|zip -r "#{archive_source.path}" "#{directory}"|, silence: true)
           end
           with_retry(max_network_retry) { RestClient.put( writeable_git_url, File.open(archive_source), multipart: true, content_type: 'application/zip' ) unless mock }
           FileUtils.cp(File.path(archive_source), "#{directory}/git_archive.zip")
