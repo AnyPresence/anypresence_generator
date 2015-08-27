@@ -6,7 +6,7 @@ module AnypresenceGenerator
     include AnypresenceGenerator::Payload::Build
 
     def steps
-      [:setup_repository, :init_or_clone] + self.class._steps + [:commit_to_repository, :push_to_repository, :upload_artifacts]
+      [:setup_repository, :init_or_clone] + self.class._steps + [:commit_to_repository, :push_to_repository, :upload_artifacts, :upload_readme]
     end
   end
 end

@@ -121,10 +121,24 @@ module AnypresenceGenerator
       FileUtils.cp(File.path(artifacts), "#{project_directory}/artifacts.zip")
     end
 
+    def upload_readme
+      if File.exists?("#{project_directory}/#{readme_name}")
+        log "Uploading #{readme_name}."
+        with_retry(max_network_retry) { RestClient.put( workable.writeable_readme_url, File.open("#{project_directory}/#{readme_name}"), multipart: true, content_type: 'text/plain' ) unless mock }
+        with_retry(max_network_retry) { RestClient.put( workable.readme_uploaded_url, nil, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock }
+      else
+        log "No #{readme_name} found, skipping upload."
+      end
+    end
+
     private
 
     def steps
       raise 'Subclasses must implement!'
+    end
+
+    def readme_name
+      'README.md'.freeze
     end
 
     def write_log!
