@@ -27,7 +27,7 @@ module AnypresenceGenerator
           end
         end
         if (workhorse.run_command(%|file -Ib #{File.path(git_archive)}|, silence: true).first.start_with?("application/zip;".freeze))
-          workhorse.run_command(%|unzip "#{File.path(git_archive)}" -d "#{directory}"|, silence: true)
+          workhorse.run_command(%|cd #{directory} && unzip -o #{File.path(git_archive)}|, silence: true)
         else
           workhorse.run_command(%|tar -xf "#{File.path(git_archive)}" -C "#{directory}"|, silence: true)
         end
@@ -44,10 +44,10 @@ module AnypresenceGenerator
           if File.exists?("#{directory}/.gitignore")
             gitignore = File.read("#{directory}/.gitignore")
             exclude = ""
-            gitignore.split("\n").each { |ignore| exclude << %|--exclude="./#{ignore.start_with?('/') ? ignore.sub('/','') : ignore}" | if !ignore.start_with?('#') && !ignore.nil? && !ignore.blank? }
-            workhorse.run_command(%|zip -r #{archive_source.path} "#{directory}" #{exclude}|, silence: true)
+            gitignore.split("\n").each { |ignore| exclude << %|--exclude="./#{ignore.start_with?('/') ? ignore.sub('/','') : ignore}*" | if !ignore.start_with?('#') && !ignore.nil? && !ignore.blank? }
+            workhorse.run_command(%|cd #{directory} && zip -r #{archive_source.path} . #{exclude}|, silence: true)
           else
-            workhorse.run_command(%|zip -r "#{archive_source.path}" "#{directory}"|, silence: true)
+            workhorse.run_command(%|cd #{directory} && zip -r #{archive_source.path} .|, silence: true)
           end
           with_retry(max_network_retry) { RestClient.put( writeable_git_url, File.open(archive_source), multipart: true, content_type: 'application/zip' ) unless mock }
           FileUtils.cp(File.path(archive_source), "#{directory}/git_archive.zip")

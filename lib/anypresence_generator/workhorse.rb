@@ -113,9 +113,9 @@ module AnypresenceGenerator
       artifacts = Tempfile.new(['artifacts','.zip'])
       artifacts.close
       FileUtils.rm(artifacts)
-      exclude = ""
-      %w{.git/ tmp/ vendor/ .bundle/ node_modules/ git_archive.zip}.each { |ignore| exclude << %|--exclude="./#{ignore}" | }
-      run_command(%|zip -r "#{artifacts.path}" "#{project_directory}" #{exclude}|, silence: true)
+      exclude = "-x "
+      %w{.git/* .git/ tmp/* .tmp/* vendor/* .bundle/* node_modules/* git_archive.zip}.each { |ignore| exclude << %|"./#{ignore}" | }
+      run_command(%|cd #{project_directory} && zip -r "#{artifacts.path}" . #{exclude}|, silence: true)
       log "Uploading artifacts archive"
       with_retry(max_network_retry) { RestClient.put( workable.writeable_artifact_url, File.open(artifacts), multipart: true, content_type: 'application/zip' ) unless mock }
       with_retry(max_network_retry) { RestClient.put( workable.artifacts_uploaded_url, nil, { authorization: "Token token=\"#{auth_token}\"", content_type: :json, accept: :json } ) unless mock }
