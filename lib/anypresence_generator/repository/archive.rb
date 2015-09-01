@@ -26,7 +26,7 @@ module AnypresenceGenerator
             archive_file.write(remote_file.read)
           end
         end
-        if (workhorse.run_command(%|file -Ib #{File.path(git_archive)}|, silence: true).first.start_with?("application/zip;".freeze))
+        if (workhorse.run_command(%|file -b #{File.path(git_archive)}|, silence: true).first.start_with?("Zip archive data".freeze))
           workhorse.run_command(%|cd #{directory} && unzip -o #{File.path(git_archive)}|, silence: true)
         else
           workhorse.run_command(%|tar -xf "#{File.path(git_archive)}" -C "#{directory}"|, silence: true)
