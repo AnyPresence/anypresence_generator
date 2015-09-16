@@ -9,7 +9,15 @@ This should serve as a guide for the ***[platform]*** SDK for `<%=j application_
 
 ## Table of Contents
 
-## Project Structure
+
+- [Project Structure](#project-structure)
+- [Adding the SDK to your Application](#adding-the-sdk-to-your-application)
+    - [Dependencies](#dependencies)
+- [Setup and Initialize the SDK](#setup-and-initialize-the-sdk)
+- [Local Caching](#local-caching)
+- [Authentication](#authentication)
+
+## <a name="project-structure"></a> Project Structure
 
 General description of the files and folders you will find within this SDK project folder.
 
@@ -35,7 +43,7 @@ General description of the files and folders you will find within this SDK proje
 	* **utility** - Utility module
 * **test** - SDK unit tests for generic modules and classes as well as generated Models
 
-## Adding the SDK to your Application
+## <a name="adding-the-sdk-to-your-application"></a> Adding the SDK to your Application
 
 ***[Steps showing how to include/use the SDK in an app/project.]***
 
@@ -43,7 +51,7 @@ General description of the files and folders you will find within this SDK proje
 
 In order to include this SDK within your Application simply take the file `ap_sdk.js`, found in the SDK folder at the root level. This file contains the entire SDK code in one file **without** the dependencies like JQuery. Take that file and copy it anywhere you want within you Application folder structure and just include it in your `index.html` using a <scripṭ/\> tag.
 
-### Dependencies ***(Optional Section)***
+### <a name="dependencies"></a> Dependencies ***(Optional Section)***
 
 ***[Any additional information regarding dependencies that must be included in order for the SDK to work properly in your application.]***
 
@@ -51,7 +59,7 @@ In order to include this SDK within your Application simply take the file `ap_sd
 
 All the SDK dependencies can be found in the path *SDK_ROOT/sdk/lib/*, where SDK_ROOT is the folder where this SDK is. You must add this dependencies for the SDK to work properly, however, note that you can download this dependencies yourself if you wish, you don't **have** to use the ones in the lib folder specifically, they are included there as a convenience.
 
-## Setup and Initialize the SDK
+## <a name="setup-and-initialize-the-sdk"></a> Setup and Initialize the SDK
 
 ***[Code snippets showing how to initialize/setup the SDK correctly (base URL, auth URL, etc…).]***
 
@@ -73,7 +81,8 @@ angular.module("myApp")
 
 	}]);
 ```
-## Local Caching ***(Optional Section)***
+
+## <a name="local-caching"></a> Local Caching ***(Optional Section)***
 
 ***[If local caching is not available at all (i.e. Java SDK) then specify that here]***
 
@@ -97,7 +106,7 @@ angular.module("myApp")
 	}]);
 ```
 
-## Authentication
+## <a name="authentication"></a> Authentication
 
 Before you can authenticate with the SDK in your application  you must create an Auth Object in the Anypresence Designer and a user in your application's back end.
 
