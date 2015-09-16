@@ -16,6 +16,37 @@ This should serve as a guide for the ***[platform]*** SDK for `<%=j application_
 - [Setup and Initialize the SDK](#setup-and-initialize-the-sdk)
 - [Local Caching](#local-caching)
 - [Authentication](#authentication)
+- [Models](#models)
+***[Below is a code snippet to dynamically generate the model sub-sections]***
+```
+<% application_definition.object_definitions.each_with_index do |object_definition, index| %>
+		<% suffix = ''
+		if index > 0
+			suffix = "-#{index}"
+		end %>
+		- [<%=j object_definition.name %>](#<%=j object_definition.name.downcase.gsub(/\s/,'-') %>)
+			- [Create](#create-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>)
+      - [Read](#read-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>)
+			- [Update](#update-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>)
+			- [Delete](#delete-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>)
+      - [Direct to Source](#direct-to-source-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>)
+			- [Query Scopes](#query-scopes-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>)
+			<% unless (object_definition.belongs_to_relationship_definitions.empty? and object_definition.has_one_relationship_definitions.empty? and object_definition.has_many_relationship_definitions.empty?) %>
+			- [Relationships](#relationships-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>)
+			<% end %>
+	<% end %>
+```
+- [Push Notifications](#push-notifications)
+    - [Register Device](#register-device)
+    - [Unregister Device](#unregister-device)
+    - [Subscribe to Channel](#subscribe-to-channel)
+    - [Unsubscribe from Channel](#unsubscribe-from-channel)
+    - [Send Message to Channel](#send-message-to-channel)
+- [Development](#development)
+    - [Placeholder for sub-sections]
+- [Testing](#testing)
+- [Troubleshooting](#troubleshooting)
+- [Miscellaneous](#miscellaneous)
 
 ## <a name="project-structure"></a> Project Structure
 
@@ -136,7 +167,7 @@ angular.module("myApp")
 	}]);
 ```
 
-## Models
+## <a name="models"></a> Models
 
 Available Model objects:
 
@@ -154,7 +185,7 @@ Available Model objects:
 <% application_definition.object_definitions.each do |object_definition| %>
 ```
 ***[Sub-header with model's name]***
-### `<%=j object_definition.name %>`
+### <a name="<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a> `<%=j object_definition.name %>`
 
 ***[Any specific instructions for how to use the model]***
 
@@ -162,7 +193,7 @@ Available Model objects:
 
 To use this model you have to inject `$<%=j object_definition.name.camelize(:lower) %>`.
 
-#### Create
+#### <a name="create-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a> Create
 
 To create instances of `<%=j object_definition.name %>` do:
 
@@ -181,7 +212,7 @@ instance.$save().then(function() {
 });
 ```
 
-#### Read
+#### <a name="read-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a> Read
 
 To read a specific instance by id you can do:
 
@@ -199,7 +230,7 @@ $<%=j object_definition.name.camelize(:lower) %>.get({ id: "1" }).then(function(
 
 ***[If local caching is enabled on a per request basis (i.e. iOS SDK) then specify that here and include a code snippet]***
 
-#### Update
+#### <a name="update-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a> Update
 
 To update an instance you can call `instance.$save()` at any time.
 
@@ -216,7 +247,7 @@ instance.$save({
 });
 ```
 
-#### Delete
+#### <a name="delete-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a> Delete
 
 To delete an instance:
 
@@ -229,11 +260,11 @@ $<%=j object_definition.name.camelize(:lower) %>.delete({ id: "1" }).then(functi
 	// The instance with id = "1" got deleted from the server
 });
 ```
-#### Direct to Source
+#### <a name="direct-to-source-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a> Direct to Source
 
 ***[Code snippets per D2S model showing how to call methods and pass the appropriate context (if supported).]***
 
-#### Query Scopes
+#### <a name="query-scopes-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a> Query Scopes
 
 The available query scopes for `<%=j object_definition.name %>` are:
 
@@ -334,7 +365,7 @@ console.log($scope.myScope.value); // Would print a value like "3000" or undefin
 <% unless (object_definition.belongs_to_relationship_definitions.empty? and object_definition.has_one_relationship_definitions.empty? and object_definition.has_many_relationship_definitions.empty?) %>
 ```
 
-#### Relationships
+#### <a name="relationships-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a> Relationships
 
 ***[Description of how relationships work within the overall context of the SDK as well as individual model instances]***
 
@@ -472,7 +503,7 @@ $<%=j object_definition.name.camelize(:lower) %>.$related.<%=j hasMany.opposite_
 <% end %>
 ```
 
-## Push Notifications (Optional Section)
+## <a name="push-notifications"></a> Push Notifications (Optional Section)
 
 ***[If push notifications are not available at all (i.e. Angular SDK) then specify that here]***
 
@@ -484,7 +515,7 @@ $<%=j object_definition.name.camelize(:lower) %>.$related.<%=j hasMany.opposite_
 
 The SDK support push notification, including device registration and channel subscriptions.  The following as examples illustration how to accomplish each.
 
-### Register Device
+### <a name="register-device"></a> Register Device
 ```objective-c
 [APPushNotification registerDevice:@"1234567890123456789012345678901234567890"
                           callback:^(NSString *response, NSError *error) {
@@ -494,7 +525,7 @@ The SDK support push notification, including device registration and channel sub
 }];
 ```
 
-### Unregister Device
+### <a name="unregister-device"></a> Unregister Device
 ```objective-c
 [APPushNotification unregisterDevice:@"1234567890123456789012345678901234567890"
                             callback:^(NSString *response, NSError *error) {
@@ -504,7 +535,7 @@ The SDK support push notification, including device registration and channel sub
 }];
 ```
 
-### Subscribe to Channel
+### <a name="subscribe-to-channel"></a> Subscribe to Channel
 ```objective-c
 [APPushNotification subscribeToChannel:@"MyChannel"
                               deviceId:@"1234567890123456789012345678901234567890"
@@ -515,7 +546,7 @@ The SDK support push notification, including device registration and channel sub
 }];
 ```
 
-### Unsubscribe from Channel
+### <a name="unsubscribe-from-channel"></a> Unsubscribe from Channel
 ```objective-c
 [APPushNotification unsubscribeFromChannel:@"MyChannel"
                                   deviceId:@"1234567890123456789012345678901234567890"
@@ -526,7 +557,7 @@ The SDK support push notification, including device registration and channel sub
 }];
 ```
 
-### Send Message to Channel
+### <a name="send-message-to-channel"></a> Send Message to Channel
 ```objective-c
 APPushNotificationData *data = [[APPushNotificationData alloc] init];
 data.alert = @"Foobar";
@@ -545,7 +576,7 @@ data.expiry = 1000;
 }];
 ```
 
-## Development
+## <a name="development"></a> Development
 
 ***[what dependencies are required to be installed for the user to make their own modifications to the SDK and then re-build it]***
 
@@ -594,7 +625,7 @@ before making changes:
 
 `grunt watch`
 
-## Testing
+## <a name="testing"></a> Testing
 
 The SDK comes with a complete test suite.  Execute tests from grunt:
 
@@ -607,10 +638,10 @@ editing the `watch` task in `Gruntfile.js`.
 The test suite can also be run directly in a browser.  Open `test/index.html` and click
 "Run Tests".
 
-## Troubleshooting
+## <a name="troubleshooting"></a> Troubleshooting
 
 ***[Section describing how to troubleshoot issues encountered while developing with the SDK]***
 
-## Miscellaneous (Optional Section)
+## <a name="miscellaneous"></a> Miscellaneous (Optional Section)
 
 ***[Any additional items not covered above that are pertinent only to specific SDKs]***
