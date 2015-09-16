@@ -469,6 +469,8 @@ $<%=j object_definition.name.camelize(:lower) %>.$related.<%=j hasMany.opposite_
 
 ***[Section describing how to use push notifications in the SDK]***
 
+***[Include descriptions of what each subsection means (i.e. what does registering a device mean, subscribing to a channel etc.)]***
+
 ***[Below is an example from the iOS SDK README]***
 
 The SDK support push notification, including device registration and channel subscriptions.  The following as examples illustration how to accomplish each.
