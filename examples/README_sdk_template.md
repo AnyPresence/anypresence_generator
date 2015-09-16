@@ -97,8 +97,30 @@ angular.module("myApp")
 
 ## Authentication
 
+Before you can authenticate with the SDK in your application  you must create an Auth Object in the Anypresence Designer and a user in your application's back end.
+
 ***[Code snippets showing how to setup / authenticate a user in the SDK]***
 
 ***[Below is an example from the Angular SDK README]***
 
-Before you can authenticate with the SDK in your application  you must create an Auth Object in the Anypresence Designer and a user in your application's back end.
+```javascript
+angular.module("myApp")
+  .controller("MyController", ["$<%=j application_definition.name.camelize(:lower) %>SdkAuthentication", function($<%=j application_definition.name.camelize(:lower) %>SdkAuthentication) {
+
+    // To login
+    $<%=j application_definition.name.camelize(:lower) %>SdkAuthentication.login({
+      username: "johndoe",
+      password: "doe123"
+    });
+
+    $<%=j application_definition.name.camelize(:lower) %>SdkAuthentication.isAuthenticated();
+    // true
+
+    // To logout
+    $<%=j application_definition.name.camelize(:lower) %>SdkAuthentication.logout();
+
+    $<%=j application_definition.name.camelize(:lower) %>SdkAuthentication.isAuthenticated();
+    // false
+
+	}]);
+```
