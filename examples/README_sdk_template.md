@@ -257,6 +257,8 @@ To fetch the values of a query scope you can just call the query scope from the 
 
 ***[Code snippet showing how to call the query scope on an instance of the model]***
 
+***[Below is an example from the Angular SDK README]***
+
 ```javascript
 $scope.myScope = $<%=j object_definition.name.camelize(:lower) %>.<%=j query_name %>();
 ```
@@ -281,4 +283,34 @@ $scope.myScope = $<%=j object_definition.name.camelize(:lower) %>.<%=j query_nam
 }, function(err) { // Error callback
 	// There was an error while fetching the data
 });
+```
+
+***[If the query scope is an Aggregate scope]***
+```
+<% elsif query_scope.type == 'AggregateQueryScope' %>
+```
+
+***[Description of what the query scope is expected to return]***
+
+***[Below is an example from the Angular SDK README]***
+
+To fetch the values of a query scope you can just call the query scope from the model. Aggregate scopes like this one return an Object with a single attribute. This attribute is always called `value` and it gets filled with the result of the query once the request comes back from the backend server.
+
+***[Code snippet showing how to call the query scope on an instance of the model]***
+
+***[Below is an example from the Angular SDK README]***
+
+```javascript
+$scope.myScope = $<%=j object_definition.name.camelize(:lower) %>.<%=j query_name %>();
+console.log($scope.myScope.value); // Would print a value like "3000" or undefined if the request hasn't returned yet
+```
+
+***[End of query scope conditional statement]***
+```
+<% end %>
+```
+
+***[End of iterating over available query scopes on the model]***
+```
+<% end %>
 ```
