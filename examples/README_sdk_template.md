@@ -172,23 +172,6 @@ instance.$save().then(function() {
 });
 ```
 
-#### Update
-
-To update an instance you can call `instance.$save()` at any time.
-
-***[Code snippet showing how to update an instance of the model]***
-
-***[Below is an example from the Angular SDK README]***
-
-```javascript
-// To update the instance pass an object containing the attributes you want to update to the $save method
-instance.$save({
-  age: 29
-}).then(function() {
-	// The instance got updated
-});
-```
-
 #### Read
 
 To read a specific instance by id you can do:
@@ -206,3 +189,34 @@ $<%=j object_definition.name.camelize(:lower) %>.get({ id: "1" }).then(function(
 ```
 
 ***[If local caching is enabled on a per request basis (i.e. iOS SDK) then specify that here and include a code snippet]***
+
+#### Update
+
+To update an instance you can call `instance.$save()` at any time.
+
+***[Code snippet showing how to update an instance of the model]***
+
+***[Below is an example from the Angular SDK README]***
+
+```javascript
+// To update the instance pass an object containing the attributes you want to update to the $save method
+instance.$save({
+  age: 29
+}).then(function() {
+	// The instance got updated
+});
+```
+
+#### Delete
+
+To delete an instance:
+
+***[Code snippet showing how to read an instance of the model]***
+
+***[Below is an example from the Angular SDK README]***
+
+```javascript
+$<%=j object_definition.name.camelize(:lower) %>.delete({ id: "1" }).then(function() {
+	// The instance with id = "1" got deleted from the server
+});
+```
