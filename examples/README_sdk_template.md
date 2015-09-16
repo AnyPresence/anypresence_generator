@@ -77,6 +77,8 @@ angular.module("myApp")
 
 ***[If local caching is not available at all (i.e. Java SDK) then specify that here]***
 
+***[If local caching is not enabled globally but instead on a per request basis (i.e. iOS SDK) then specify that here and include code snippet under the "read" method in the Models section]***
+
 ***[Code snippets showing how to enable local caching if local caching is enabled globally (i.e. Angular SDK)]***
 
 ***[Below is an example from the Angular SDK README]***
@@ -190,3 +192,17 @@ instance.$save({
 #### Read
 
 To read a specific instance by id you can do:
+
+***[Code snippet showing how to read an instance of the model]***
+
+***[Below is an example from the Angular SDK README]***
+
+```javascript
+$<%=j object_definition.name.camelize(:lower) %>.get({ id: "1" }).then(function(response) {
+	// The instance with id = "1" got fetched
+	// instance data is in response.data
+	console.log(response.data);
+});
+```
+
+***[If local caching is enabled on a per request basis (i.e. iOS SDK) then specify that here and include a code snippet]***
