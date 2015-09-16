@@ -75,7 +75,7 @@ angular.module("myApp")
 ```
 ## Local Caching ***(Optional Section)***
 
- ***[If local caching is not available at all (i.e. Java SDK) then specify that here]***
+***[If local caching is not available at all (i.e. Java SDK) then specify that here]***
 
 ***[Code snippets showing how to enable local caching if local caching is enabled globally (i.e. Angular SDK)]***
 
@@ -124,3 +124,69 @@ angular.module("myApp")
 
 	}]);
 ```
+
+## Models
+
+Available Model objects:
+
+***[Programmatically list all available model objects in SDK]***
+```javascript
+<% application_definition.object_definitions.each do |object_definition| %>
+* <%=j object_definition.name %>
+<% end %>
+```
+
+***[For each model provide code snippets showing how to call all CRUD methods, available query scopes, access all relationships, and access the local cache if applicable (i.e. iOS SDK)]***
+
+***[Iterate over available models passing them into the following code block]***
+```
+<% application_definition.object_definitions.each do |object_definition| %>
+```
+***[Sub-header with model's name]***
+### <%=j object_definition.name %>
+
+***[Any specific instructions for how to use the model]***
+
+***[Below is an example from the Angular SDK README]***
+
+To use this model you have to inject `$<%=j object_definition.name.camelize(:lower) %>`.
+
+#### Create
+
+To create instances of <%=j object_definition.name %> do:
+
+***[Code snippet showing how to create an instance of the model]***
+
+***[Below is an example from the Angular SDK README]***
+
+```javascript
+// The instance does not get saved to the server when created
+var instance = $<%=j object_definition.name.camelize(:lower) %>.create({ name: "John" });
+instance.lastName = "Doe";
+instance.age = 28;
+// To save the instance do
+instance.$save().then(function() {
+	// The instance got saved
+});
+```
+
+#### Update
+
+To update an instance you can call `instance.$save()` at any time.
+
+***[Code snippet showing how to update an instance of the model]***
+
+***[Below is an example from the Angular SDK README]***
+
+```javascript
+// To update the instance pass an object containing the attributes you want to update to the $save method
+instance.$save({
+  age: 29
+}).then(function() {
+	// The instance got updated
+});
+```
+
+#### Read
+
+To read a specific instance by id you can do:
