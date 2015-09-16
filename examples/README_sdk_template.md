@@ -131,7 +131,7 @@ angular.module("myApp")
 
 Available Model objects:
 
-***[Programmatically list all available model objects in SDK]***
+***[Programmatically list all of the available model objects in SDK]***
 ```javascript
 <% application_definition.object_definitions.each do |object_definition| %>
 * <%=j object_definition.name %>
@@ -140,7 +140,7 @@ Available Model objects:
 
 ***[For each model provide code snippets showing how to call all CRUD methods, available query scopes, access all relationships, and access the local cache if applicable (i.e. iOS SDK)]***
 
-***[Iterate over available models passing them into the following code block]***
+***[Iterate over all of the available models passing them into the following code block]***
 ```
 <% application_definition.object_definitions.each do |object_definition| %>
 ```
@@ -449,3 +449,154 @@ $<%=j object_definition.name.camelize(:lower) %>.$related.<%=j hasMany.opposite_
 ```
 <% end %>
 ```
+
+***[End of conditional statement to check if the model has any relationships associated with it ]***
+```
+<% end %>
+```
+
+***[End of iterating over all of the available models]***
+```
+<% end %>
+```
+
+## Push Notifications (Optional Section)
+
+***[If push notifications are not available at all (i.e. Angular SDK) then specify that here]***
+
+***[Section describing how to use push notifications in the SDK]***
+
+***[Below is an example from the iOS SDK README]***
+
+The SDK support push notification, including device registration and channel subscriptions.  The following as examples illustration how to accomplish each.
+
+### Register Device
+```objective-c
+[APPushNotification registerDevice:@"1234567890123456789012345678901234567890"
+                          callback:^(NSString *response, NSError *error) {
+                              if (!error) {
+                                  NSLog(@"RESPONSE: %@", response);
+                              }
+}];
+```
+
+### Unregister Device
+```objective-c
+[APPushNotification unregisterDevice:@"1234567890123456789012345678901234567890"
+                            callback:^(NSString *response, NSError *error) {
+                                if (!error) {
+                                    NSLog(@"RESPONSE: %@", response);
+                                }
+}];
+```
+
+### Subscribe to Channel
+```objective-c
+[APPushNotification subscribeToChannel:@"MyChannel"
+                              deviceId:@"1234567890123456789012345678901234567890"
+                              callback:^(NSString *response, NSError *error) {
+                                  if (!error) {
+                                      NSLog(@"RESPONSE: %@", response);
+                                  }
+}];
+```
+
+### Unsubscribe from Channel
+```objective-c
+[APPushNotification unsubscribeFromChannel:@"MyChannel"
+                                  deviceId:@"1234567890123456789012345678901234567890"
+                                  callback:^(NSString *response, NSError *error) {
+                                      if (!error) {
+                                          NSLog(@"RESPONSE: %@", response);
+                                      }
+}];
+```
+
+### Send Message to Channel
+```objective-c
+APPushNotificationData *data = [[APPushNotificationData alloc] init];
+data.alert = @"Foobar";
+data.sound = @"ding";
+data.badge = @"1";
+data.expiry = 1000;
+
+[APPushNotification sendMessage:@"FOOBAR"
+                    channelName:@"MyChannel"
+                        iOSData:data
+                    androidData:nil
+                       callback:^(NSString *response, NSError *error) {
+                           if (!error) {
+                               NSLog(@"RESPONSE: %@", response);
+                           }
+}];
+```
+
+## Development
+
+***[what dependencies are required to be installed for the user to make their own modifications to the SDK and then re-build it]***
+
+***[Below is an example from the Angular SDK README]***
+
+### Developing with Grunt
+
+Grunt is a NodeJS-based task runner.  It helps automate common tasks, such as
+asset compilation, minification, and testing.  Grunt tasks are included for this
+SDK in `Gruntfile.js`.
+
+Follow the directions below to get up and running with Grunt.
+
+#### Prerequisites
+
+- [NodeJS](http://nodejs.org)
+
+#### Install NodeJS Modules
+
+From the root directory of the SDK (where `Gruntfile.js` is
+located), install NodeJS modules:
+
+`npm install`
+
+#### Build for Production
+
+To compile assets and create a full production build, run the
+build task:
+
+`grunt build`
+
+#### Development
+
+During development, a full minified SDK build is unnecessary.  To
+compile assets without minifying:
+
+`grunt compile`
+
+#### Automatic Compilation
+
+Since it's cumbersome to manually compile assets after every change during
+development, the SDK's `Gruntfile.js` includes a `watch` task.  The
+task monitors changes to the SDK's `coffee` and `sass` assets,
+automatically compiling (but not minifying) them.  Run the following command
+before making changes:
+
+`grunt watch`
+
+## Testing
+
+The SDK comes with a complete test suite.  Execute tests from grunt:
+
+`grunt test`
+
+SDK tests are also executed by the `watch` task.  If changing the SDK
+significantly, some or all tests may fail.  You may disable auto-testing by
+editing the `watch` task in `Gruntfile.js`.
+
+The test suite can also be run directly in a browser.  Open `test/index.html` and click
+"Run Tests".
+
+## Troubleshooting
+
+***[Section describing how to troubleshoot issues encountered while developing with the SDK]***
+
+## Miscellaneous (Optional Section)
+
+***[Any additional items not covered above that are pertinent only to specific SDKs]***
