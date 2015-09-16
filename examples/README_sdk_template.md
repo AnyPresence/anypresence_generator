@@ -329,3 +329,123 @@ console.log($scope.myScope.value); // Would print a value like "3000" or undefin
 ***[Below is an example from the Angular SDK README]***
 
 To access relationships within a Model there is an object within __all__ Models called `$related` that holds the defined relationships. Relationships act like query scopes, you can pass success and error callbacks to any of them and they always return an empty Array that will be filled when the request returns from the server.
+
+***[Conditional statement to check if the model has any `belongs_to` relationships associated with it ]***
+```
+<% unless object_definition.belongs_to_relationship_definitions.empty? %>
+```
+
+##### Belongs To
+
+***[Iterate over the model's `belongs_to` relationships passing them into the following code block]***
+
+```
+<% object_definition.belongs_to_relationship_definitions.each do |belongs| %>
+```
+
+***[Sub-header with relationship's name]***
+
+###### `<%=j belongs.object_definition.name %>`
+
+***[Code snippet showing how to access the relationship on an instance of the model]***
+
+***[Below is an example from the Angular SDK README]***
+
+```javascript
+$<%=j object_definition.name.camelize(:lower) %>.$related.<%=j belongs.object_definition.name.downcase %>(function(result) {
+	// result will be an Array with the related models
+	console.log("Success!!");
+}, function() {
+	console.log("Error :(");
+});
+```
+
+***[End of iterating the model's `belongs_to` relationships]***
+```
+<% end %>
+```
+
+***[End of conditional statement to check if the model has any `belongs_to` relationships associated with it]***
+```
+<% end %>
+```
+
+***[Conditional statement to check if the model has any `has_one` relationships associated with it ]***
+```
+<% unless object_definition.has_one_relationship_definitions.empty? %>
+```
+
+##### Has One
+
+***[Iterate over the model's `has_one` relationships passing them into the following code block]***
+
+```
+<% object_definition.has_one_relationship_definitions.each do |hasOne| %>
+```
+
+***[Sub-header with relationship's name]***
+
+###### <%=j hasOne.opposite_object_definition.name %>
+
+***[Code snippet showing how to access the relationship on an instance of the model]***
+
+***[Below is an example from the Angular SDK README]***
+
+```javascript
+$<%=j object_definition.name.camelize(:lower) %>.$related.<%=j hasOne.opposite_object_definition.name.downcase %>(function(result) {
+	// result will be an Array with the related models
+	console.log("Success!!");
+}, function() {
+	console.log("Error :(");
+});
+```
+
+***[End of iterating the model's `has_one` relationships]***
+```
+<% end %>
+```
+
+***[End of conditional statement to check if the model has any `has_one` relationships associated with it]***
+```
+<% end %>
+```
+
+***[Conditional statement to check if the model has any `has_many` relationships associated with it ]***
+```
+<% unless object_definition.has_many_relationship_definitions.empty? %>
+```
+
+##### Has Many
+
+***[Iterate over the model's `has_many` relationships passing them into the following code block]***
+
+```
+<% object_definition.has_many_relationship_definitions.each do |hasMany| %>
+```
+
+***[Sub-header with relationship's name]***
+
+###### <%=j hasMany.opposite_object_definition.name %>
+
+***[Code snippet showing how to access the relationship on an instance of the model]***
+
+***[Below is an example from the Angular SDK README]***
+
+```javascript
+$<%=j object_definition.name.camelize(:lower) %>.$related.<%=j hasMany.opposite_object_definition.name.downcase.pluralize %>(function(result) {
+	// result will be an Array with the related models
+	console.log("Success!!");
+}, function() {
+	console.log("Error :(");
+});
+```
+
+***[End of iterating the model's `has_many` relationships]***
+```
+<% end %>
+```
+
+***[End of conditional statement to check if the model has any `has_many` relationships associated with it]***
+```
+<% end %>
+```
