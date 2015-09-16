@@ -220,6 +220,9 @@ $<%=j object_definition.name.camelize(:lower) %>.delete({ id: "1" }).then(functi
 	// The instance with id = "1" got deleted from the server
 });
 ```
+#### Direct to Source
+
+***[Code snippets per D2S model showing how to call methods and pass the appropriate context (if supported).]***
 
 #### Query Scopes
 
