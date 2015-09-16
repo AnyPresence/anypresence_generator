@@ -1,11 +1,11 @@
 # ***[Application Name]***Sdk
-<%=j application_definition.name %>Sdk
+`<%=j application_definition.name %>`Sdk
 
 ## Description
 
 ***[A description of the type of SDK along with the app name.]***
 
-This should serve as a guide for the ***[platform]*** SDK for <%=j application_definition.name %>
+This should serve as a guide for the ***[platform]*** SDK for `<%=j application_definition.name %>`
 
 ## Table of Contents
 
@@ -145,7 +145,7 @@ Available Model objects:
 <% application_definition.object_definitions.each do |object_definition| %>
 ```
 ***[Sub-header with model's name]***
-### <%=j object_definition.name %>
+### `<%=j object_definition.name %>`
 
 ***[Any specific instructions for how to use the model]***
 
@@ -155,7 +155,7 @@ To use this model you have to inject `$<%=j object_definition.name.camelize(:low
 
 #### Create
 
-To create instances of <%=j object_definition.name %> do:
+To create instances of `<%=j object_definition.name %>` do:
 
 ***[Code snippet showing how to create an instance of the model]***
 
@@ -218,5 +218,67 @@ To delete an instance:
 ```javascript
 $<%=j object_definition.name.camelize(:lower) %>.delete({ id: "1" }).then(function() {
 	// The instance with id = "1" got deleted from the server
+});
+```
+
+#### Query Scopes
+
+The available query scopes for `<%=j object_definition.name %>` are:
+
+***[Programmatically list all the available query scopes on the model]***
+```
+<% object_definition.query_scopes.each do |query_scope| %>
+* <%=j query_scope.name %>
+<% end %>
+```
+
+***[Iterate over the available query scopes on the model passing them into the following code block]***
+
+```
+<% object_definition.query_scopes.each do |query_scope| %>
+```
+
+***[Sub-header with query scope's name]***
+
+##### `<%=j query_name %>`
+
+***[Separate Object scopes from Aggregate scopes with a conditional statement]***
+
+***[If the query scope is an Object scope]***
+```
+<% if query_scope.type == 'ObjectQueryScope' %>
+```
+
+***[Description of what the query scope is expected to return]***
+
+***[Below is an example from the Angular SDK README]***
+
+To fetch the values of a query scope you can just call the query scope from the model. Object scopes like this one return an empty Array that will get filled when the data comes back from the backend server.
+
+***[Code snippet showing how to call the query scope on an instance of the model]***
+
+```javascript
+$scope.myScope = $<%=j object_definition.name.camelize(:lower) %>.<%=j query_name %>();
+```
+
+***[Code snippet showing how to filter the results of the query scope if applicable (optional)]***
+
+***[Below is an example from the Angular SDK README]***
+
+If the scope supports parameters to filter the results, then you can call them like so:
+
+```javascript
+$scope.myScope = $<%=j object_definition.name.camelize(:lower) %>.<%=j query_name %>({
+	query: { // In query go the parameters for the scope
+		name: "John",
+		age: 40
+	},
+	// Pagination options
+	limit: 15, // Max amount of results
+	offset: 0,	// The index from which to start reading the amount of elements
+}, function(collection) { // Success callback
+	// Use the collection data returned
+}, function(err) { // Error callback
+	// There was an error while fetching the data
 });
 ```
