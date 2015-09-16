@@ -185,7 +185,12 @@ Available Model objects:
 <% application_definition.object_definitions.each do |object_definition| %>
 ```
 ***[Sub-header with model's name]***
-### <a name="<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a> `<%=j object_definition.name %>`
+### `<%=j object_definition.name %>`
+
+***[Below is the anchor link to use for the model's name]***
+```
+<a name="<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a>
+```
 
 ***[Any specific instructions for how to use the model]***
 
@@ -193,7 +198,12 @@ Available Model objects:
 
 To use this model you have to inject `$<%=j object_definition.name.camelize(:lower) %>`.
 
-#### <a name="create-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a> Create
+#### Create
+
+***[Below is the anchor link to use for the model's create sub-section]***
+```
+<a name="create-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a>
+```
 
 To create instances of `<%=j object_definition.name %>` do:
 
@@ -212,7 +222,12 @@ instance.$save().then(function() {
 });
 ```
 
-#### <a name="read-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a> Read
+#### Read
+
+***[Below is the anchor link to use for the model's read sub-section]***
+```
+<a name="read-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a>
+```
 
 To read a specific instance by id you can do:
 
@@ -230,7 +245,12 @@ $<%=j object_definition.name.camelize(:lower) %>.get({ id: "1" }).then(function(
 
 ***[If local caching is enabled on a per request basis (i.e. iOS SDK) then specify that here and include a code snippet]***
 
-#### <a name="update-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a> Update
+#### Update
+
+***[Below is the anchor link to use for the model's update sub-section]***
+```
+<a name="update-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a>
+```
 
 To update an instance you can call `instance.$save()` at any time.
 
@@ -247,7 +267,12 @@ instance.$save({
 });
 ```
 
-#### <a name="delete-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a> Delete
+#### Delete
+
+***[Below is the anchor link to use for the model's delete sub-section]***
+```
+<a name="delete-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a>
+```
 
 To delete an instance:
 
@@ -260,11 +285,21 @@ $<%=j object_definition.name.camelize(:lower) %>.delete({ id: "1" }).then(functi
 	// The instance with id = "1" got deleted from the server
 });
 ```
-#### <a name="direct-to-source-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a> Direct to Source
+#### Direct to Source
+
+***[Below is the anchor link to use for the model's direct to source sub-section]***
+```
+<a name="direct-to-source-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a>
+```
 
 ***[Code snippets per D2S model showing how to call methods and pass the appropriate context (if supported).]***
 
-#### <a name="query-scopes-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a> Query Scopes
+#### Query Scopes
+
+***[Below is the anchor link to use for the model's query scopes sub-section]***
+```
+<a name="query-scopes-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a>
+```
 
 The available query scopes for `<%=j object_definition.name %>` are:
 
@@ -365,7 +400,12 @@ console.log($scope.myScope.value); // Would print a value like "3000" or undefin
 <% unless (object_definition.belongs_to_relationship_definitions.empty? and object_definition.has_one_relationship_definitions.empty? and object_definition.has_many_relationship_definitions.empty?) %>
 ```
 
-#### <a name="relationships-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a> Relationships
+#### Relationships
+
+***[Below is the anchor link to use for the model's relationships sub-section]***
+```
+<a name="relationships-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a>
+```
 
 ***[Description of how relationships work within the overall context of the SDK as well as individual model instances]***
 
