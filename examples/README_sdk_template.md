@@ -314,3 +314,18 @@ console.log($scope.myScope.value); // Would print a value like "3000" or undefin
 ```
 <% end %>
 ```
+
+***[If the model is associated with any relationships then list them in a relationships section]***
+
+***[Conditional statement to check if the model has any relationships associated with it ]***
+```
+<% unless (object_definition.belongs_to_relationship_definitions.empty? and object_definition.has_one_relationship_definitions.empty? and object_definition.has_many_relationship_definitions.empty?) %>
+```
+
+#### Relationships
+
+***[Description of how relationships work within the overall context of the SDK as well as individual model instances]***
+
+***[Below is an example from the Angular SDK README]***
+
+To access relationships within a Model there is an object within __all__ Models called `$related` that holds the defined relationships. Relationships act like query scopes, you can pass success and error callbacks to any of them and they always return an empty Array that will be filled when the request returns from the server.
