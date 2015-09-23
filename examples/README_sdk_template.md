@@ -198,6 +198,96 @@ Available Model objects:
 
 To use this model you have to inject `$<%=j object_definition.name.camelize(:lower) %>`.
 
+***[Conditional statement to determine if it's a D2S model]***
+
+<% if object_definition.storage_interface.direct_to_source == true %>
+
+On DirectToSource Models you can specify certain values of the request being made to use string interpolation, but you also need a way of specifying what the context is going to be during that operation.
+
+Aside from passing an interpolation context, CRUD methods and query scopes work exactly the same way as before.
+
+This is how you would specify the interpolation context for the different ***CRUD*** methods:
+
+***[Code snippets per D2S model showing how to call methods and pass the appropriate context.]***
+
+#### Create
+
+***[Below is the anchor link to use for the model's create sub-section]***
+```
+<a name="create-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a>
+```
+
+To create instances of `<%=j object_definition.name %>` do:
+
+***[Code snippet showing how to create an instance of the model]***
+
+***[Below is an example from the Angular SDK README]***
+
+```javascript
+// The object passed to $save() will be used as the interpolation context
+instance.$save({
+  foo: "bar"
+});
+```
+
+#### Read
+
+***[Below is the anchor link to use for the model's read sub-section]***
+```
+<a name="read-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a>
+```
+
+***[Code snippet showing how to read an instance of the model]***
+
+***[Below is an example from the Angular SDK README]***
+
+```javascript
+// The object passed to get() as argument will be the interpolation context
+$<%=j object_definition.name.camelize(:lower) %>.get({ foo: "bar" });
+```
+
+***[If local caching is enabled on a per request basis (i.e. iOS SDK) then specify that here and include a code snippet]***
+
+#### Update
+
+***[Below is the anchor link to use for the model's update sub-section]***
+```
+<a name="update-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a>
+```
+
+To update an instance you can call `instance.$save()` at any time.
+
+***[Code snippet showing how to update an instance of the model]***
+
+***[Below is an example from the Angular SDK README]***
+
+```javascript
+// The object passed to $save() will be used as the interpolation context
+instance.$save({
+  foo: "bar"
+});
+```
+
+#### Delete
+
+***[Below is the anchor link to use for the model's delete sub-section]***
+```
+<a name="delete-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a>
+```
+
+To delete an instance:
+
+***[Code snippet showing how to read an instance of the model]***
+
+***[Below is an example from the Angular SDK README]***
+
+```javascript
+// The object passed to delete() as argument will be the interpolation context
+$<%=j object_definition.name.camelize(:lower) %>.delete({ foo: "bar" });
+```
+
+<% else %>
+
 #### Create
 
 ***[Below is the anchor link to use for the model's create sub-section]***
@@ -285,14 +375,11 @@ $<%=j object_definition.name.camelize(:lower) %>.delete({ id: "1" }).then(functi
 	// The instance with id = "1" got deleted from the server
 });
 ```
-#### Direct to Source
 
-***[Below is the anchor link to use for the model's direct to source sub-section]***
+***[End of conditional statement to determine if it's a D2S model]***
 ```
-<a name="direct-to-source-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>"></a>
+<% end %>
 ```
-
-***[Code snippets per D2S model showing how to call methods and pass the appropriate context (if supported).]***
 
 #### Query Scopes
 
