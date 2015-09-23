@@ -29,7 +29,6 @@ This should serve as a guide for the ***[platform]*** SDK for `<%=j application_
       - [Read](#read-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>)
 			- [Update](#update-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>)
 			- [Delete](#delete-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>)
-      - [Direct to Source](#direct-to-source-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>)
 			- [Query Scopes](#query-scopes-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>)
 			<% unless (object_definition.belongs_to_relationship_definitions.empty? and object_definition.has_one_relationship_definitions.empty? and object_definition.has_many_relationship_definitions.empty?) %>
 			- [Relationships](#relationships-<%=j object_definition.name.downcase.gsub(/\s/,'-') %>)
@@ -202,6 +201,8 @@ To use this model you have to inject `$<%=j object_definition.name.camelize(:low
 
 <% if object_definition.storage_interface.direct_to_source == true %>
 
+***[This is a Direct to Source model]***
+
 On DirectToSource Models you can specify certain values of the request being made to use string interpolation, but you also need a way of specifying what the context is going to be during that operation.
 
 Aside from passing an interpolation context, CRUD methods and query scopes work exactly the same way as before.
@@ -287,6 +288,8 @@ $<%=j object_definition.name.camelize(:lower) %>.delete({ foo: "bar" });
 ```
 
 <% else %>
+
+***[This is a regular model]***
 
 #### Create
 
@@ -396,6 +399,32 @@ The available query scopes for `<%=j object_definition.name %>` are:
 * <%=j query_scope.name %>
 <% end %>
 ```
+***[Conditional statement to determine if it's a D2S model]***
+
+<% if object_definition.storage_interface.direct_to_source == true %>
+
+***[This is a Direct to Source model]***
+
+Query scopes on direct to source Models work almost exactly the same as on regular Models. The difference is that instead of passing an object like:
+
+```javascript
+{
+  query: {
+    id: 1
+  },
+  limit: 10,
+  offset: 0
+}
+```
+
+You would instead pass an interpolation context to the scope
+
+```javascript
+// The object passed to all() will be used as the interpolation context
+$scope.myScope = $<%=j object_definition.name.camelize(:lower) %>.all({
+  foo: "bar"
+});
+```
 
 ***[Iterate over the available query scopes on the model passing them into the following code block]***
 
@@ -476,6 +505,92 @@ console.log($scope.myScope.value); // Would print a value like "3000" or undefin
 ```
 
 ***[End of iterating over available query scopes on the model]***
+```
+<% end %>
+```
+
+<% else %>
+
+***[This is a regular model]***
+
+***[Iterate over the available query scopes on the model passing them into the following code block]***
+
+```
+<% object_definition.query_scopes.each do |query_scope| %>
+```
+
+***[Sub-header with query scope's name]***
+
+##### `<%=j query_name %>`
+
+***[Separate Object scopes from Aggregate scopes with a conditional statement]***
+
+***[If the query scope is an Object scope]***
+```
+<% if query_scope.type == 'ObjectQueryScope' %>
+```
+
+***[Description of what the query scope is expected to return]***
+
+***[Below is an example from the Angular SDK README]***
+
+To fetch the values of a query scope you can just call the query scope from the model. Object scopes like this one return an empty Array that will get filled when the data comes back from the backend server.
+
+***[Code snippet showing how to call the query scope on an instance of the model]***
+
+***[Below is an example from the Angular SDK README]***
+
+```javascript
+$scope.myScope = $<%=j object_definition.name.camelize(:lower) %>.<%=j query_name %>();
+```
+
+***[Code snippet showing how to filter the results of the query scope if applicable (optional)]***
+
+***[Below is an example from the Angular SDK README]***
+
+If the scope supports parameters to filter the results, then you can call them like so:
+
+```javascript
+$scope.myScope = $<%=j object_definition.name.camelize(:lower) %>.<%=j query_name %>({
+	foo: "bar"
+}, function(collection) { // Success callback
+	// Use the collection data returned
+}, function(err) { // Error callback
+	// There was an error while fetching the data
+});
+```
+
+***[If the query scope is an Aggregate scope]***
+```
+<% elsif query_scope.type == 'AggregateQueryScope' %>
+```
+
+***[Description of what the query scope is expected to return]***
+
+***[Below is an example from the Angular SDK README]***
+
+To fetch the values of a query scope you can just call the query scope from the model. Aggregate scopes like this one return an Object with a single attribute. This attribute is always called `value` and it gets filled with the result of the query once the request comes back from the backend server.
+
+***[Code snippet showing how to call the query scope on an instance of the model]***
+
+***[Below is an example from the Angular SDK README]***
+
+```javascript
+$scope.myScope = $<%=j object_definition.name.camelize(:lower) %>.<%=j query_name %>();
+console.log($scope.myScope.value); // Would print a value like "3000" or undefined if the request hasn't returned yet
+```
+
+***[End of query scope conditional statement]***
+```
+<% end %>
+```
+
+***[End of iterating over available query scopes on the model]***
+```
+<% end %>
+```
+
+***[End of conditional statement to determine if it's a D2S model]***
 ```
 <% end %>
 ```
