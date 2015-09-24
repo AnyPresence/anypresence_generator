@@ -465,13 +465,7 @@ If the scope supports parameters to filter the results, then you can call them l
 
 ```javascript
 $scope.myScope = $<%=j object_definition.name.camelize(:lower) %>.<%=j query_name %>({
-	query: { // In query go the parameters for the scope
-		name: "John",
-		age: 40
-	},
-	// Pagination options
-	limit: 15, // Max amount of results
-	offset: 0,	// The index from which to start reading the amount of elements
+  foo: "bar"
 }, function(collection) { // Success callback
 	// Use the collection data returned
 }, function(err) { // Error callback
@@ -552,7 +546,13 @@ If the scope supports parameters to filter the results, then you can call them l
 
 ```javascript
 $scope.myScope = $<%=j object_definition.name.camelize(:lower) %>.<%=j query_name %>({
-	foo: "bar"
+  query: { // In query go the parameters for the scope
+		name: "John",
+		age: 40
+	},
+	// Pagination options
+	limit: 15, // Max amount of results
+	offset: 0,	// The index from which to start reading the amount of elements
 }, function(collection) { // Success callback
 	// Use the collection data returned
 }, function(err) { // Error callback
